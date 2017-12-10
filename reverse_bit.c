@@ -7,10 +7,10 @@ unsigned int reverse_bit(unsigned int value);
 
 int main()
 {
-	int num = 0;
+	unsigned int num = 0;
 	printf("输入要倒转的数:");
 	scanf("%d", &num);
-	printf("\n%u\n", reverse_bit((unsigned)num));
+	printf("\n%u\n", reverse_bit(num));
 	system("pause");
 	return 0;
 }
@@ -18,9 +18,9 @@ int main()
 unsigned int reverse_bit(unsigned int value)
 {
 	unsigned char *a;
-	int arr[32] = { 0 };
+	unsigned int arr[32] = { 0 };
 	int i = 0, j = 31;
-	unsigned ret = 0;
+	unsigned int ret = 0;
 	a = &(unsigned char *)value;//取出要倒序的数的地址，为了优化速度，这里使用char，一次处理8个比特位
 	for (i = 0; i < 4; i++)
 	{
@@ -47,10 +47,11 @@ unsigned int reverse_bit(unsigned int value)
 		if (i % 8 == 7)
 			printf(" ");
 	}
-	for (i = 0; i < 32; i++)//将数组里存的二进制序列转成无符号数
+	for (i = 0; i < 31; i++)//将数组里存的二进制序列转成无符号数
 	{
 		ret = ret + arr[i];
-		ret = ret << 1;
+		ret = ret * 2;//此处之所以只循环31次，若循环32次，第一位会丢失
 	}
+	ret = ret + arr[i];//加上最后一位二进制序列
 	return ret;
 }
