@@ -20,10 +20,23 @@ int main()
 								if ((C == 1) + (D == 2) == 1)
 									if ((C == 5) + (D == 3) == 1)
 										if ((E == 4) + (A == 1) == 1)
-											break;
+										{
+											int flag = 0;//用flag来看排名是否正确
+											flag |= 1 << (A - 1);
+											flag |= 1 << (B - 1);//将每个选手的比特位来赋给flag，1为有排名
+											flag |= 1 << (C - 1);//0为此排名无人
+											flag |= 1 << (D - 1);//可知排名序列11011这种中间排名空缺的情况是不存在的
+											flag |= 1 << (E - 1);
+											while (flag)
+											{
+												if ((flag & 1) == 0)//如果该位和1与为0,跳出循环
+													break;
+												flag >>= 1;
+											}
+											if (flag == 0)
+												printf("A:第%d B:第%d C:第%d D:第%d E:第%d\n", A, B, C, D, E);
+										}
 					}
-	printf("A:第%d B:第%d C:第%d D:第%d E:第%d\n", A, B, C, D, E);
 	system("pause");
 	return 0;
-
 }
