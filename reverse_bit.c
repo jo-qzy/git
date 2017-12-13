@@ -1,5 +1,8 @@
 #define _CRT_SECURE_NO_WARNINGS 1
 
+//题目
+//输入一个数，将其二进制序列倒转，输出得到的数
+
 #include <stdio.h>
 #include <stdlib.h>
 
