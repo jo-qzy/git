@@ -2,6 +2,8 @@
 
 #include <stdio.h>
 
+//特殊方式求平均值————》位运算
+
 int Get_Avg(int x, int y);
 
 int main()
