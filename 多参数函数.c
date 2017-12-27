@@ -8,7 +8,20 @@
 #include <stdio.h>
 #include <stdarg.h>
 
+int Avg(int n, ...);//求平均数
+int Max(int n, ...);//求最大值
+int print(char *p, ...);//模拟实现printf
+void print_num(int num);//打印数字函数，配合print使用
 
+int main()
+{
+	int n = 6;
+	printf("平均值函数：%d\n", Avg(n, 5, 7, 8, 9, 10, 3));
+	printf("最大值函数：%d\n", Max(n, 5, 7, 8, 9, 10, 3));
+	print("字符串输出测试：字符串：%s\n		字符：%c%c%c\n		数字：%d\n", "hello", 'b', 'i', 't', 100);
+	system("pause");
+	return 0;
+}
 
 int Avg(int n, ...)
 {
@@ -68,7 +81,7 @@ int print(char *p, ...)
 				count++;
 				break;
 			case 'd':
-				printf("%d",va_arg(cha, int));//惭愧，这里不知道怎么输出一个数字
+				print_num(va_arg(cha, int));
 				break;//如果你看到了并向到解决方法，可以私我
 			case ' '://空格
 				putchar(' ');
@@ -88,12 +101,12 @@ int print(char *p, ...)
 	return count;
 }
 
-int main()
+
+void print_num(int num)//引入一个打印数字的函数
 {
-	int n = 6;
-	printf("平均值函数：%d\n", Avg(n, 5, 7, 8, 9, 10, 3));
-	printf("最大值函数：%d\n", Max(n, 5, 7, 8, 9, 10, 3));
-	print("字符串输出测试：字符串：%s\n		字符：%c%c%c\n		数字：%d\n", "hello", 'b', 'i', 't',100);
-	system("pause");
-	return 0;
+	if (num > 9)
+	{
+		print_num(num / 10);
+	}
+	putchar((num % 10) + 48);//递归打印数字的每一个数
 }
