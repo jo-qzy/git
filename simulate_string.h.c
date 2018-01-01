@@ -3,6 +3,7 @@
 //模拟实现string.h头文件里的一些函数
 //包括：
 //strlen
+//strcmp
 //strcpy
 //strcat
 //strstr
@@ -91,9 +92,9 @@ int my_strcmp(const char* str1, const char* str2)//模拟strcmp
 	assert(str2);
 	while (*str1 == *str2)
 	{
-		str1++, str2++;
+		str1++, str2++;//比较到最后一个相同的位置后退出循环
 	}
-	if ((unsigned)*str1 > (unsigned)*str2)
+	if ((unsigned)*str1 > (unsigned)*str2)//比较最后一个字符后的字符大小
 	{
 		return 1;
 	}
