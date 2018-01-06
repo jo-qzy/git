@@ -29,7 +29,7 @@ char* Bubble(int num, char* dest, ...)
 	va_start(pstr, dest);//可变参数初始化
 	while (num--)//将所有字符串统一放在dest内方便排序
 	{
-		strcpy(dest, va_arg(pstr, char*));
+		strcpy(dest, va_arg(pstr, const char*));//const更安全
 		while (*dest)//dest不指向'\0'
 		{
 			dest++;//指针后移，直至指向'\0'
