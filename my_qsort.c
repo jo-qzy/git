@@ -43,7 +43,7 @@ void my_sort(void* base, size_t count, size_t size, int(*cmp)(const void* elem1,
 	}
 }
 
-void swap(void* data1, void* data2, size_t size)
+static void swap(void* data1, void* data2, size_t size)//修改该函数的链接属性，使他只能在该文件内部使用
 {
 	int  i = 0;
 	while(size--)//按字节交换数据
