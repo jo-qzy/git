@@ -7,19 +7,41 @@
 
 int extra = 0;
 
-int DrinkSoda(int money);
-
+int DrinkSoda1(int money, int price);
+int DrinkSoda2(int money, int price);
 
 int main()
 {
 	int money = 20;
 	int price = 1;
-	printf("%d\n", DrinkSoda(money,price));
+	printf("%d\n", DrinkSoda1(money, price));
+	printf("%d\n", DrinkSoda2(money,price));
 	system("pause");
 	return 0;
 }
 
-int DrinkSoda(int money,int price)
+//方法1：非递归算法
+int DrinkSoda1(int money, int price)
+{
+	int bottle = money / price;
+	int sum = bottle;
+	while (bottle != 1)
+	{
+		sum = sum + bottle / 2;
+		if (bottle % 2 == 1)
+		{
+			bottle = bottle / 2 + 1;
+		}
+		else
+		{
+			bottle = bottle / 2;
+		}
+	}
+	return sum;
+}
+
+//方法2：递归算法
+int DrinkSoda2(int money,int price)
 {
 	int count = money / 1;//这里一元一瓶，改成多少一瓶都ok
 	if (0 == money)
