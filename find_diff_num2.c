@@ -18,11 +18,10 @@ int main()
 	int size = sizeof(arr) / sizeof(arr[0]);
 	printf("原数组：");
 	print_arr(arr, size);
-	sort(arr, size);
 	printf("位运算实现：\n");
 	find_diff1(arr, size);
 	printf("排序实现：\n");
-	
+	sort(arr, size);
 	printf("新数组：");
 	print_arr(arr, size);
 	find_diff2(arr, size);
