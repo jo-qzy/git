@@ -1,7 +1,7 @@
 #define _CRT_SECURE_NO_WARNINGS 1
 #pragma warning(disable:4996)
 
-//三种strlen的写法
+//三种strlen的写法，第二种为无临时变量的方法
 
 #include <stdio.h>
 #include <windows.h>
