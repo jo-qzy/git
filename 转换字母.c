@@ -9,26 +9,20 @@
 #include <assert.h>
 #include <stdarg.h>
 
-void print(char cha);
 
 int main()
 {
 	char cha;
 	while(1)
 	{
-		cha = getchar();
+		scanf("%c", &cha);
+		getchar();
 		if (cha == '0')
 		{
 			break;
 		}
-		print(cha);
-		fflush(stdin);
+		printf("%c\n",'Z' - cha + 'a');
 	}
 	system("pause");
 	return 0;
-}
-
-void print(char dst)
-{
-	putchar('Z' - dst + 'a');
 }
