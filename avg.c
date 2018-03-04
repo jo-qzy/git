@@ -20,13 +20,13 @@ int main()
 
 int avg(int n, ...)
 {
-	va_list num;
-	va_start(num, n);
+	va_list num;//可变参数指针设置
+	va_start(num, n);//初始化位置
 	int sum = 0;
 	int i = n;
 	while (i--)
 	{
-		sum += va_arg(num, int);
+		sum += va_arg(num, int);//依次取值
 	}
 	va_end(num);
 	return sum / n;
