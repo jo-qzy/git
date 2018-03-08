@@ -16,7 +16,7 @@ int main()
 	while(1)
 	{
 		scanf("%c", &cha);
-		getchar();
+		getchar();//这个地方不写getchar()有未知错误，不知道为什么
 		if (cha == '0')
 		{
 			break;
