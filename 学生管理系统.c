@@ -16,13 +16,53 @@
 //6.	清空所有联系人
 //7.	以名字排序所有联系人
 
-typedef struct
+struct Stu
 {
 	char name[10];
 	char sex;
 	unsigned int age;
 	char tel[13];
 	char addr[20];
-}*student;
+};
 
-student std[1000] = malloc;
+int main()
+{
+	struct Stu *stu[1000] = (struct Stu*)malloc(sizeof(struct Stu) * 1000);
+	int choice = 0;
+	do
+	{
+		printf("========================================\n");
+		printf("             通讯录管理系统             \n");
+		printf("========================================\n");
+		printf("      功能选项：\n");
+		printf("            0---退出\n");
+		printf("            1---添加联系人信息\n");
+		printf("            2---删除指定联系人\n");
+		printf("            3---查找指定联系人\n");
+		printf("            4---修改指定联系人\n");
+		printf("            5---显示所有联系人\n");
+		printf("            6---清空所有联系人\n");
+		printf("            7---以名字排序所有联系人\n");
+		printf("========================================\n");
+		scanf("%d", &choice);
+		switch (choice)
+		{
+		case 1:
+			break;
+		case 2:
+			break;
+		case 3:
+			break;
+		case 4:
+			break;
+		case 5:
+			break;
+		case 6:
+			break;
+		case 0:
+			break;//退出选项
+		}
+	} while (choice != 0);
+	printf("感谢使用本系统\n");
+	return 0;
+}
