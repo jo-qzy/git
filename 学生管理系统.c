@@ -16,19 +16,26 @@
 //6.	清空所有联系人
 //7.	以名字排序所有联系人
 
-struct Stu
+
+
+typedef struct Addr
 {
 	char name[10];
 	char sex;
 	unsigned int age;
 	char tel[13];
 	char addr[20];
-};
+}linkman;
+
+void my_print(linkman* link[]);
+
+int num = 0;
 
 int main()
 {
-	struct Stu *stu[1000] = (struct Stu*)malloc(sizeof(struct Stu) * 1000);
+	linkman *link[1000];
 	int choice = 0;
+	int i = 0;
 	do
 	{
 		printf("========================================\n");
@@ -48,6 +55,10 @@ int main()
 		switch (choice)
 		{
 		case 1:
+			link[num] = (linkman*)malloc(sizeof(linkman));
+			
+			scanf("%s %c %d %s %s", link[num]->name, &link[num]->sex, &link[num]->age, link[num]->tel, link[num]->addr);
+			num++;
 			break;
 		case 2:
 			break;
@@ -56,8 +67,15 @@ int main()
 		case 4:
 			break;
 		case 5:
+			//my_print(link[1000]);
+			for (i = 0; i < num; i++)
+			{
+				printf("  %s  %c  %d  %s  %s\n", link[i]->name, link[i]->sex, link[i]->age, link[i]->tel, link[i]->addr);
+			}
 			break;
 		case 6:
+			break;
+		case 7:
 			break;
 		case 0:
 			break;//退出选项
@@ -65,4 +83,14 @@ int main()
 	} while (choice != 0);
 	printf("感谢使用本系统\n");
 	return 0;
+}
+
+void my_print(linkman* dst[])
+{
+	int i = 0;
+	printf("  name\tsex\tage\ttelephone\taddress\n");
+	for (i = 0; i < num; i++)
+	{
+		printf("  %s  %c  %d  %s  %s\n", dst[i]->name, dst[i]->sex, dst[i]->age, dst[i]->tel, dst[i]->addr);
+	}
 }
