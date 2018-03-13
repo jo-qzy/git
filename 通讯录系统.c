@@ -28,8 +28,8 @@ typedef struct Addr
 	char addr[20];
 }linkman;
 
-void create_new_link(linkman* dst[]);
-void delete_link(char name[], linkman* dst[]);
+void create_new_link(linkman* dst[]);//创建新联系人
+void delete_link(char name[], linkman* dst[]);//删除联系人
 void find_link(char name[], linkman* dst[]);
 void modify_link(char name[], linkman* dst[]);
 void my_print(linkman* dst[]);
@@ -97,15 +97,40 @@ int main()
 
 void create_new_link(linkman* dst[])
 {
-	dst[num] = (linkman*)malloc(sizeof(linkman));
-	if (NULL == dst[num])
+	char choice;
+	do
 	{
-		perror("error:");
-		return;
+		dst[num] = (linkman*)malloc(sizeof(linkman));
+		if (NULL == dst[num])
+		{
+			perror("error:");
+			return;
+		}
+		printf("输入姓名、性别、年龄、电话、地址:> ");
+		scanf("%s %c %d %s %s", dst[num]->name, &dst[num]->sex, &dst[num]->age, dst[num]->tel, dst[num]->addr);
+		num++;
+		printf("是否继续创建？（y/n）:");
+		scanf("%c", &choice);
+	} while ('y' == choice);
+}
+
+void copy_link(linkman* dst[])
+{
+	FILE *fp;
+	fp = fopen("link.txt", "r");
+	while (!feof(fp))
+	{
+		dst[num] = (linkman*)malloc(sizeof(linkman));
+		if (NULL == dst[num])
+		{
+			perror("error:");
+			return;
+		}
+		fscanf(fp, "%s %c %d %s %s", dst[num]->name, &dst[num]->sex, &dst[num]->age, dst[num]->tel, dst[num]->addr);
+		num++;
 	}
-	printf("输入姓名、性别、年龄、电话、地址:> ");
-	scanf("%s %c %d %s %s", dst[num]->name, &dst[num]->sex, &dst[num]->age, dst[num]->tel, dst[num]->addr);
-	num++;
+	fclose(fp);
+	printf("读取完成………………\n");
 }
 
 void delete_link(char name[], linkman* dst[])
@@ -234,4 +259,17 @@ void sort(linkman* dst[])
 			}
 		}
 	}
+}
+
+void print_to_txt(linkman* dst[])
+{
+	int i = 0;
+	FILE *fp;
+	fp = fopen("link.txt", "w");
+	fprint(fp, "姓名\t性别\t年龄\t电话\t地址\n");
+	for (i = 0; i < num; i++)
+	{
+		fprintf(fp, "  %s  %c  %d  %s  %s\n", dst[i]->name, dst[i]->sex, dst[i]->age, dst[i]->tel, dst[i]->addr);
+	}
+	fclose(fp);
 }
