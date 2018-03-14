@@ -29,12 +29,14 @@ typedef struct Addr
 }linkman;
 
 void create_new_link(linkman* dst[]);//创建新联系人
+void copy_link(linkman* dst[]);//从文本中创建联系人
 void delete_link(char name[], linkman* dst[]);//删除联系人
 void find_link(char name[], linkman* dst[]);
 void modify_link(char name[], linkman* dst[]);
 void my_print(linkman* dst[]);
 void free_all(linkman* dst[]);
 void sort(linkman* dst[]);
+void print_to_txt(linkman* dst[]);//打印至文本
 
 int num = 0;
 
@@ -63,7 +65,24 @@ int main()
 		switch (choice)
 		{
 		case 1:
-			create_new_link(link);
+			printf("===========================\n");
+			printf("          创建选项         \n");
+			printf("===========================\n");
+			printf("    功能选项：\n");
+			printf("       0---退出修改\n");
+			printf("       1---直接创建\n");
+			printf("       2---从文本中读取\n");
+			printf("===========================\n");
+			scanf("%d", &choice);
+			switch (choice)
+			{
+			case 1:
+				create_new_link(link);
+				break;
+			case 2:
+				copy_link(link);
+				break;
+			}
 			break;
 		case 2:
 			scanf("%s", name);
@@ -87,7 +106,8 @@ int main()
 			sort(link);
 			break;
 		case 0:
-			sort(link);
+			print_to_txt(link);
+			free_all(link);
 			break;//退出选项
 		}
 	} while (choice != 0);
@@ -108,6 +128,7 @@ void create_new_link(linkman* dst[])
 		}
 		printf("输入姓名、性别、年龄、电话、地址:> ");
 		scanf("%s %c %d %s %s", dst[num]->name, &dst[num]->sex, &dst[num]->age, dst[num]->tel, dst[num]->addr);
+		getchar();
 		num++;
 		printf("是否继续创建？（y/n）:");
 		scanf("%c", &choice);
@@ -266,7 +287,6 @@ void print_to_txt(linkman* dst[])
 	int i = 0;
 	FILE *fp;
 	fp = fopen("link.txt", "w");
-	fprint(fp, "姓名\t性别\t年龄\t电话\t地址\n");
 	for (i = 0; i < num; i++)
 	{
 		fprintf(fp, "  %s  %c  %d  %s  %s\n", dst[i]->name, dst[i]->sex, dst[i]->age, dst[i]->tel, dst[i]->addr);
