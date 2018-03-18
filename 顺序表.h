@@ -17,7 +17,6 @@ typedef struct Seqlist
 }Seqlist;
 
 void SeqlistInit(Seqlist *pSeq);
-void SeqlistDestroy(Seqlist *pSeq);
 void SeqlistInsert(Seqlist *pSeq, size_t pos, DataType data);
 void SeqlistErase(Seqlist *pSeq, size_t pos);
 void SeqlistPushFront(Seqlist *pSeq, DataType data);
@@ -244,4 +243,42 @@ void SeqlistBinarySearch(Seqlist *pSeq, DataType data)
 	}
 	printf("Data doesn't exist!\n");
 	return;
+}
+
+
+//动态分配部分
+
+typedef struct V_Seqlist
+{
+	DataType *array;
+	size_t _size;
+	size_t capicity;
+}V_Seqlist;
+
+void V_SeqlistInit(V_Seqlist *pSeq,size_t capicity);
+void V_SeqlistPopBack(V_Seqlist *pSeq, DataType data);
+void V_SeqlistDestroy(V_Seqlist *pSeq);
+
+void V_SeqlistInit(V_Seqlist *pSeq, size_t capicity)
+{
+	pSeq->capicity = capicity;
+	pSeq->array = (DataType*)melloc(pSeq->capicity * sizeof(DataType));
+}
+
+void V_SeqlistPopBack(V_Seqlist *pSeq, DataType data)
+{
+	if (pSeq->_size == pSeq->capicity)
+	{
+		pSeq->array = (DataType*)relloc(pSeq->capicity * 2 * sizeof(DataType));
+		pSeq->capicity *= 2;
+	}
+	pSeq->array[pSeq->_size] = data;
+	pSeq->_size++;
+}
+
+void V_SeqlistDestroy(V_Seqlist *pSeq)
+{
+	free(pSeq->array);
+	pSeq->array = NULL;
+	pSeq->capicity = 0;
 }
