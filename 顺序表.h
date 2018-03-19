@@ -129,7 +129,7 @@ void SeqlistRemove(Seqlist *pSeq, DataType data)
 	SeqlistErase(pSeq, pos);
 }
 
-void SeqlistRemoveAll(Seqlist *pSeq, DataType data)//有错
+void SeqlistRemoveAll(Seqlist *pSeq, DataType data)
 {
 	assert(pSeq);
 	int count = 0;
@@ -247,7 +247,6 @@ void SeqlistBinarySearch(Seqlist *pSeq, DataType data)
 
 
 //动态分配部分
-
 typedef struct V_Seqlist
 {
 	DataType *array;
@@ -256,7 +255,7 @@ typedef struct V_Seqlist
 }V_Seqlist;
 
 void V_SeqlistInit(V_Seqlist *pSeq,size_t capicity);
-void V_SeqlistPopBack(V_Seqlist *pSeq, DataType data);
+void V_SeqlistPushBack(V_Seqlist *pSeq, DataType data);
 void V_SeqlistDestroy(V_Seqlist *pSeq);
 
 void V_SeqlistInit(V_Seqlist *pSeq, size_t capicity)
@@ -265,7 +264,7 @@ void V_SeqlistInit(V_Seqlist *pSeq, size_t capicity)
 	pSeq->array = (DataType*)melloc(pSeq->capicity * sizeof(DataType));
 }
 
-void V_SeqlistPopBack(V_Seqlist *pSeq, DataType data)
+void V_SeqlistPushBack(V_Seqlist *pSeq, DataType data)
 {
 	if (pSeq->_size == pSeq->capicity)
 	{
