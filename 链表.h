@@ -26,16 +26,23 @@ typedef struct ListNode
 	struct ListNode* _pNext;
 }ListNode;
 
-ListNode *BuyListNode(DataType data);
-void ListDestory(ListNode** ppHead);
-void ListPrint(ListNode* pHead);
+ListNode *BuyListNode(DataType data);//申请空间
+void ListDestory(ListNode** ppHead);//销毁链表
+void ListPrint(ListNode* pHead);//打印链表
 
-void ListPushBack(ListNode** ppHead, DataType data);
-void ListPopBack(ListNode* pHead);
-void ListPushFront(ListNode** ppHead, DataType data);
-ListNode* ListFind(ListNode* pHead, DataType data);
-void ListInsert(ListNode** ppHead, ListNode* pos, DataType data);
-void ListErase(ListNode** ppHead, ListNode* pos);
+void ListPushBack(ListNode** ppHead, DataType data);//尾插链表
+void ListPopBack(ListNode* pHead);//删除尾链
+void ListPushFront(ListNode** ppHead, DataType data);//头插链表
+ListNode* ListFind(ListNode* pHead, DataType data);// 查找链表
+void ListInsert(ListNode** ppHead, ListNode* pos, DataType data);//指定位置插入链表
+void ListErase(ListNode** ppHead, ListNode* pos);//删除指定链表
+
+//链表练习
+void PrintHelp(ListNode* pHead);
+void PrintFromTail(ListNode* pHead);
+void DeleteNodeNotTail(ListNode* pHead);
+
+
 
 ListNode* BuyListNode(DataType data)
 {
@@ -165,4 +172,58 @@ void ListErase(ListNode** ppHead, ListNode* pos)
 	}
 	cur->_pNext = pos->_pNext;
 	free(pos);
+}
+
+
+
+//链表练习
+//1.从尾打印链表
+void PrintFromTail(ListNode* pHead)
+{
+	PrintHelp(pHead);
+	printf("\n");
+}
+
+void PrintHelp(ListNode* pHead)//从尾打印链表，辅助函数
+{
+	assert(pHead);
+	if (pHead->_pNext != NULL)
+	{
+		PrintHelp(pHead->_pNext);
+	}
+	printf("%d ", pHead->_data);//递归打印
+}
+
+//2.删除一个非尾节点（不能遍历）
+void DeleteNodeNotTail(ListNode* pos)
+{
+	assert(pos);
+	ListNode* cur = pos;
+	ListNode* next = pos->_pNext;
+	if (cur->_pNext == NULL)
+	{
+		printf("The node is tail.\n");
+		return;
+	}
+	cur->_data = next->_data;//把下一节点的数据前移，问题转为删除后一个节点
+	if (next->_pNext != NULL)
+	{
+		cur->_pNext = next->_pNext;
+	}
+	else
+	{
+		cur->_pNext = NULL;
+	}
+	free(next);
+}
+
+//3.无头链表一个节点前插入链表（不能遍历）
+void Insert1(ListNode* pos, DataType data)
+{
+	ListNode* cur = pos;
+	ListNode* next = pos->_pNext;
+	next->_pNext = cur->_pNext;
+	next->_data = cur->_data;
+	cur->_pNext = next;
+	cur->_data = data;
 }
