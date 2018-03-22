@@ -41,7 +41,8 @@ void ListErase(ListNode** ppHead, ListNode* pos);//删除指定链表
 void PrintHelp(ListNode* pHead);
 void PrintFromTail(ListNode* pHead);
 void DeleteNodeNotTail(ListNode* pHead);
-
+void ListInsert1(ListNode* pos, DataType data);
+ListNode* JosephCircle(ListNode* s, size_t circle_num);
 
 
 ListNode* BuyListNode(DataType data)
@@ -218,12 +219,79 @@ void DeleteNodeNotTail(ListNode* pos)
 }
 
 //3.无头链表一个节点前插入链表（不能遍历）
-void Insert1(ListNode* pos, DataType data)
+void ListInsert1(ListNode* pos, DataType data)
 {
 	ListNode* cur = pos;
-	ListNode* next = pos->_pNext;
+	ListNode* next = BuyListNode(cur->_data);
 	next->_pNext = cur->_pNext;
 	next->_data = cur->_data;
 	cur->_pNext = next;
 	cur->_data = data;
+}
+
+//4.单链实现约瑟夫环
+ListNode* JosephCircle(ListNode* pHead, size_t circle_num)
+{
+	assert(pHead);
+	ListNode* cur = pHead;
+	ListNode* next = NULL;
+	while (cur->_pNext)
+	{
+		cur = cur->_pNext;
+	}
+	cur->_pNext = pHead;
+	cur = cur->_pNext;
+	while (cur->_pNext != cur)
+	{
+		size_t count = circle_num;
+		while (--count)
+		{
+			cur = cur->_pNext;
+		}
+		next = cur->_pNext;
+		cur->_data = next->_data;
+		cur->_pNext = next->_pNext;
+		free(next);
+	}
+	return cur;
+}
+
+//5.逆置链表
+void ReverseList(ListNode** ppHead)
+{
+	assert(*ppHead);
+	ListNode* cur = (*ppHead);
+	ListNode* new_head = NULL;
+	ListNode* next;
+	while (cur)
+	{
+		next = cur->_pNext;
+		cur->_pNext = new_head;
+		new_head = cur;
+		cur = next;
+	}
+	(*ppHead) = new_head;
+}
+
+//6.链表的冒泡排序
+void ListBubbleSort(ListNode* pHead)
+{
+	assert(pHead);
+	ListNode* cur = pHead;
+	ListNode* end = NULL;
+	while (end != pHead)
+	{
+		while (cur->_pNext != end)
+		{
+			if (cur->_data > cur->_pNext->_data)
+			{
+				cur->_data ^= cur->_pNext->_data;
+				cur->_pNext->_data ^= cur->_data;
+				cur->_data ^= cur->_pNext->_data;
+			}
+			cur = cur->_pNext;
+		}
+		end = cur;
+		cur = pHead;
+	}
 }
