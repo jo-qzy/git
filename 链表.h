@@ -38,12 +38,13 @@ void ListInsert(ListNode** ppHead, ListNode* pos, DataType data);//Ö¸¶¨Î»ÖÃ²åÈëÁ
 void ListErase(ListNode** ppHead, ListNode* pos);//É¾³ýÖ¸¶¨Á´±í
 
 //Á´±íÁ·Ï°
-void PrintHelp(ListNode* pHead);
+void PrintHelp(ListNode* pHead);//1.´ÓÎ²´òÓ¡Á´±í
 void PrintFromTail(ListNode* pHead);
-void DeleteNodeNotTail(ListNode* pHead);
-void ListInsert1(ListNode* pos, DataType data);
-ListNode* JosephCircle(ListNode* s, size_t circle_num);
-
+void DeleteNodeNotTail(ListNode* pHead);//2.É¾³ýÒ»¸ö·ÇÎ²½Úµã£¨²»ÄÜ±éÀú£©
+void ListInsert1(ListNode* pos, DataType data);//3.ÎÞÍ·Á´±íÒ»¸ö½ÚµãÇ°²åÈëÁ´±í£¨²»ÄÜ±éÀú£©
+ListNode* JosephCircle(ListNode* s, size_t circle_num);//4.µ¥Á´ÊµÏÖÔ¼Éª·ò»·
+void ListBubbleSort(ListNode* pHead);//5.ÄæÖÃÁ´±í
+ListNode* ListUnion(ListNode* pHead1, ListNode* pHead2);//6.ºÏ²¢Á½¸öÓÐÐòÁ´±í£¬²¢ÇÒÁ´±íÈÔÓÐÐò£»
 
 ListNode* BuyListNode(DataType data)
 {
@@ -294,4 +295,61 @@ void ListBubbleSort(ListNode* pHead)
 		end = cur;
 		cur = pHead;
 	}
+}
+
+//7.Ë«Á´±íºÏ²¢£¬ºÏ²¢ºóÒÀ¾ÉÓÐÐò£¨¹é²¢ÅÅÐòË¼Ïë£©
+ListNode* ListUnion(ListNode* pHead1, ListNode* pHead2)
+{
+	ListNode* new_head = NULL, *cur = NULL;
+	if (pHead1 == NULL && pHead2 == NULL)
+	{
+		return NULL;
+	}
+	if (pHead1 == NULL)
+	{
+		return pHead2;
+	}
+	if(pHead2 == NULL)
+	{
+		return pHead1;
+	}
+	if (pHead1->_data <= pHead2->_data)
+	{
+		new_head = pHead1;
+		pHead1 = pHead1->_pNext;
+	}
+	else
+	{
+		new_head = pHead2;
+		pHead2 = pHead2->_pNext;
+	}
+	cur = new_head;
+	while (pHead1 && pHead2)
+	{
+		if (pHead1->_data <= pHead2->_data)
+		{
+			cur->_pNext = pHead1;
+			pHead1 = pHead1->_pNext;
+		}
+		else
+		{
+			cur->_pNext = pHead2;
+			pHead2 = pHead2->_pNext;
+		}
+		cur = cur->_pNext;
+	}
+	if (pHead1 == NULL)
+	{
+		cur->_pNext = pHead2;
+	}
+	else
+	{
+		cur->_pNext = pHead1;
+	}
+	return new_head;
+}
+
+ListNode* FindMiddleNode(ListNode* pHead)
+{
+
 }
