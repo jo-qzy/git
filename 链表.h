@@ -16,7 +16,9 @@
 #include <string.h>
 #include <assert.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include <time.h>
+#include <math.h>
 
 typedef int DataType;
 
@@ -44,7 +46,17 @@ void DeleteNodeNotTail(ListNode* pHead);//2.删除一个非尾节点（不能遍历）
 void ListInsert1(ListNode* pos, DataType data);//3.无头链表一个节点前插入链表（不能遍历）
 ListNode* JosephCircle(ListNode* s, size_t circle_num);//4.单链实现约瑟夫环
 void ListBubbleSort(ListNode* pHead);//5.逆置链表
-ListNode* ListUnion(ListNode* pHead1, ListNode* pHead2);//6.合并两个有序链表，并且链表仍有序；
+void ListBubbleSort(ListNode* pHead);//6.冒泡排序
+ListNode* ListUnion(ListNode* pHead1, ListNode* pHead2);//7.合并两个有序链表，并且链表仍有序
+ListNode* FindMiddleNode(ListNode* pHead);//8.查找链表的中间结点
+ListNode* FindLastKNode(ListNode* pHead, size_t k);//9.查找倒数第K个结点
+void* DeleteLastKNode(ListNode* pHead, size_t k);//10.删除倒数第K个结点
+//11.链表带环问题
+ListNode* JudgeCycle(ListNode* pHead);//判断是否带环
+size_t GetCycleLenth(ListNode* meet);//求环长度
+ListNode* GetCycleEntrance(ListNode* pHead, ListNode* meet);//求环入口
+ListNode* JudgeCross(ListNode* pHead1, ListNode* pHead2);//12.判断链表是否相交（不带环）
+ListNode* JudgeCrossCycle(ListNode* pHead1, ListNode* pHead2);//13.判断链表是否相交（可以带环）
 
 ListNode* BuyListNode(DataType data)
 {
@@ -349,7 +361,184 @@ ListNode* ListUnion(ListNode* pHead1, ListNode* pHead2)
 	return new_head;
 }
 
+//8.查找链表的中间结点（思路：快慢指针法）
 ListNode* FindMiddleNode(ListNode* pHead)
 {
+	assert(pHead);
+	ListNode* fast = pHead;
+	ListNode* cur = pHead;
+	while (fast && fast->_pNext != NULL)
+	{
+		fast = fast->_pNext;
+		if (fast->_pNext != NULL)
+		{
+			fast = fast->_pNext;
+			cur = cur->_pNext;
+		}
+	}
+	return cur;
+}
 
+//9.查找链表倒数第K个结点
+ListNode* FindLastKNode(ListNode* pHead, size_t k)
+{
+	assert(pHead);
+	ListNode* cur = pHead;
+	ListNode* end = pHead;
+	while (k--)
+	{
+		if (end == NULL)
+		{
+			return NULL;
+		}
+		end = end->_pNext;
+	}
+	while (end)
+	{
+		end = end->_pNext;
+		cur = cur->_pNext;
+	}
+	return cur;
+}
+
+//10.删除倒数第K个节点
+void* DeleteLastKNode(ListNode** ppHead, size_t k)
+{
+	ListErase(ppHead, FindLastKNode((*ppHead), k));
+}
+
+//11.判断链表是否带环，带环求环长度和入口点
+ListNode* JudgeCycle(ListNode* pHead)//判断是否带环
+{
+	assert(pHead);
+	ListNode* fast = pHead;
+	ListNode* slow = pHead;
+	while (fast)
+	{
+		slow = slow->_pNext;
+		fast = fast->_pNext;
+		if (fast != NULL)
+		{
+			fast = fast->_pNext;
+		}
+		if (fast == slow)
+		{
+			return slow;
+		}
+	}
+	return NULL;
+}
+
+size_t GetCycleLenth(ListNode* meet)//求环长度
+{
+	ListNode* cur = meet;
+	size_t count = 1;
+	while (cur->_pNext != meet)
+	{
+		cur = cur->_pNext;
+		count++;
+	}
+	return count;
+}
+
+ListNode* GetCycleEntrance(ListNode* pHead, ListNode* meet)//求环的入口点
+{
+	while (pHead != meet)
+	{
+		pHead = pHead->_pNext;
+		meet = meet->_pNext;
+	}
+	return meet;
+}
+
+//12.判断链表是否相交（假设不带环）
+ListNode* JudgeCross(ListNode* pHead1, ListNode* pHead2)
+{
+	//两种思路：
+	//1.找到两个尾指针，若相同，相交，再长的链表先走相差的步数，两者同时走找交点
+	//2.同样的找尾指针，若相同，说明相交，将尾连任意表的头构成环，转换成求环入口问题
+	//这里只实现第一种
+	assert(pHead1 && pHead2);
+	ListNode* cur1 = pHead1;
+	ListNode* cur2 = pHead2;
+	ListNode* plong = NULL;
+	ListNode* pshort = NULL;
+	int count = 0;
+	int count1 = 1, count2 = 1;
+	while (cur1->_pNext != NULL)//均走到尾，若尾指针相同，说明相交
+	{
+		cur1 = cur1->_pNext;
+		count1++;
+	}
+	while (cur2->_pNext != NULL)
+	{
+		cur2 = cur2->_pNext;
+		count2++;
+	}
+	if (cur1 != cur2)
+	{
+		return NULL;
+	}
+	count = abs(count1 - count2);
+	if (count1 > count2)
+	{
+		plong = pHead1;
+		pshort = pHead2;
+	}
+	else
+	{
+		plong = pHead2;
+		pshort = pHead1;
+	}
+	while (count--)
+	{
+		plong = plong->_pNext;
+	}
+	while (plong != pshort)
+	{
+		plong = plong->_pNext;
+		pshort = pshort->_pNext;
+	}
+	return plong;
+}
+
+//13.判断链表是否相交（设链表可以带环）
+ListNode* JudgeCrossCycle(ListNode* pHead1, ListNode* pHead2)
+{
+	ListNode* cur1 = JudgeCycle(pHead1);
+	ListNode* cur2 = JudgeCycle(pHead2);
+	ListNode* traversal = NULL;
+	if (cur1 == NULL && cur2 == NULL)//情况1：都不带环
+	{
+		return JudgeCross(pHead1, pHead2);
+	}
+	if (cur1 == NULL || cur2 == NULL)//情况2：一个有环一个无环，不可能相交
+	{
+		return NULL;
+	}
+	//至此两个链均带环，考虑三种情况
+	//先取出环入口
+	cur1 = GetCycleEntrance(pHead1, cur1);
+	cur2 = GetCycleEntrance(pHead1, cur2);
+	traversal = cur1->_pNext;
+	//情况3：相交且环入口相同
+	if (cur1 == cur2)
+	{
+		return cur1;
+	}
+	//情况4：带环相交入口不同
+	//情况5：带环不相交
+	while (1)
+	{
+		traversal = traversal->_pNext;
+		if (traversal == cur2)//该种情况为情况4，打印两个地址返回其中一个指针
+		{
+			printf("#%p\n#%p\n", cur1, cur2);
+			return cur1;
+		}
+		if (traversal == cur1)//带环不想交，返回空
+		{
+			return NULL;
+		}
+	}
 }
