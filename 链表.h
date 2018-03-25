@@ -1,15 +1,15 @@
 //数据结构：顺序表中链表练习，实现增删查改，以及排序等操作
 
-//SListNode* BuySListNode(DataType x);
-//void SListPrint(SListNode* pHead);
-//void SListDestory(SListNode** ppHead);
+//SSListNode* BuySSListNode(DataType x);
+//void SSListPrint(SSListNode* pHead);
+//void SSListDestory(SSListNode** ppHead);
 //
-//void SListPushBack(SListNode** ppHead, DataType x);
-//void SListPopBack(SListNode** ppHead);
-//void SListPushFront(SListNode** ppHead, DataType x);
-//SListNode* SListFind(SListNode* pHead, DataType x);
-//void SListInsest(SListNode** ppHead, SListNode* pos, DataType x);
-//void SListErase(SListNode** ppHead, SListNode* pos);
+//void SSListPushBack(SSListNode** ppHead, DataType x);
+//void SSListPopBack(SSListNode** ppHead);
+//void SSListPushFront(SSListNode** ppHead, DataType x);
+//SSListNode* SSListFind(SSListNode* pHead, DataType x);
+//void SSListInsest(SSListNode** ppHead, SSListNode* pos, DataType x);
+//void SSListErase(SSListNode** ppHead, SSListNode* pos);
 
 #pragma once
 
@@ -22,53 +22,53 @@
 
 typedef int DataType;
 
-typedef struct ListNode
+typedef struct SListNode
 {
 	DataType _data;
-	struct ListNode* _pNext;
-}ListNode;
+	struct SListNode* _pNext;
+}SListNode;
 
-ListNode *BuyListNode(DataType data);//申请空间
-void ListDestory(ListNode** ppHead);//销毁链表
-void ListPrint(ListNode* pHead);//打印链表
+SListNode *BuySListNode(DataType data);//申请空间
+void SListDestory(SListNode** ppHead);//销毁链表
+void SListPrint(SListNode* pHead);//打印链表
 
-void ListPushBack(ListNode** ppHead, DataType data);//尾插链表
-void ListPopBack(ListNode* pHead);//删除尾链
-void ListPushFront(ListNode** ppHead, DataType data);//头插链表
-ListNode* ListFind(ListNode* pHead, DataType data);// 查找链表
-void ListInsert(ListNode** ppHead, ListNode* pos, DataType data);//指定位置插入链表
-void ListErase(ListNode** ppHead, ListNode* pos);//删除指定链表
+void SListPushBack(SListNode** ppHead, DataType data);//尾插链表
+void SListPopBack(SListNode* pHead);//删除尾链
+void SListPushFront(SListNode** ppHead, DataType data);//头插链表
+SListNode* SListFind(SListNode* pHead, DataType data);// 查找链表
+void SListInsert(SListNode** ppHead, SListNode* pos, DataType data);//指定位置插入链表
+void SListErase(SListNode** ppHead, SListNode* pos);//删除指定链表
 
 //链表练习
-void PrintHelp(ListNode* pHead);//1.从尾打印链表
-void PrintFromTail(ListNode* pHead);
-void DeleteNodeNotTail(ListNode* pHead);//2.删除一个非尾节点（不能遍历）
-void ListInsert1(ListNode* pos, DataType data);//3.无头链表一个节点前插入链表（不能遍历）
-ListNode* JosephCircle(ListNode* s, size_t circle_num);//4.单链实现约瑟夫环
-void ListBubbleSort(ListNode* pHead);//5.逆置链表
-void ListBubbleSort(ListNode* pHead);//6.冒泡排序
-ListNode* ListUnion(ListNode* pHead1, ListNode* pHead2);//7.合并两个有序链表，并且链表仍有序
-ListNode* FindMiddleNode(ListNode* pHead);//8.查找链表的中间结点
-ListNode* FindLastKNode(ListNode* pHead, size_t k);//9.查找倒数第K个结点
-void* DeleteLastKNode(ListNode* pHead, size_t k);//10.删除倒数第K个结点
+void PrintHelp(SListNode* pHead);//1.从尾打印链表
+void PrintFromTail(SListNode* pHead);
+void DeleteNodeNotTail(SListNode* pHead);//2.删除一个非尾节点（不能遍历）
+void SListInsert1(SListNode* pos, DataType data);//3.无头链表一个节点前插入链表（不能遍历）
+SListNode* JosephCircle(SListNode* s, size_t circle_num);//4.单链实现约瑟夫环
+void SListBubbleSort(SListNode* pHead);//5.逆置链表
+void SListBubbleSort(SListNode* pHead);//6.冒泡排序
+SListNode* SListUnion(SListNode* pHead1, SListNode* pHead2);//7.合并两个有序链表，并且链表仍有序
+SListNode* FindMiddleNode(SListNode* pHead);//8.查找链表的中间结点
+SListNode* FindLastKNode(SListNode* pHead, size_t k);//9.查找倒数第K个结点
+void* DeleteLastKNode(SListNode* pHead, size_t k);//10.删除倒数第K个结点
 //11.链表带环问题
-ListNode* JudgeCycle(ListNode* pHead);//判断是否带环
-size_t GetCycleLenth(ListNode* meet);//求环长度
-ListNode* GetCycleEntrance(ListNode* pHead, ListNode* meet);//求环入口
-ListNode* JudgeCross(ListNode* pHead1, ListNode* pHead2);//12.判断链表是否相交（不带环）
-ListNode* JudgeCrossCycle(ListNode* pHead1, ListNode* pHead2);//13.判断链表是否相交（可以带环）
+SListNode* JudgeCycle(SListNode* pHead);//判断是否带环
+size_t GetCycleLenth(SListNode* meet);//求环长度
+SListNode* GetCycleEntrance(SListNode* pHead, SListNode* meet);//求环入口
+SListNode* JudgeCross(SListNode* pHead1, SListNode* pHead2);//12.判断链表是否相交（不带环）
+SListNode* JudgeCrossCycle(SListNode* pHead1, SListNode* pHead2);//13.判断链表是否相交（可以带环）
 
-ListNode* BuyListNode(DataType data)
+SListNode* BuySListNode(DataType data)
 {
-	ListNode *NewList = (ListNode*)malloc(sizeof(ListNode));
-	NewList->_data = data;
-	NewList->_pNext = NULL;
-	return NewList;
+	SListNode *NewSList = (SListNode*)malloc(sizeof(SListNode));
+	NewSList->_data = data;
+	NewSList->_pNext = NULL;
+	return NewSList;
 }
 
-void ListDestory(ListNode** ppHead)
+void SListDestory(SListNode** ppHead)
 {
-	ListNode* prev = *ppHead;
+	SListNode* prev = *ppHead;
 	while (*ppHead)
 	{
 		(*ppHead) = (*ppHead)->_pNext;
@@ -77,9 +77,9 @@ void ListDestory(ListNode** ppHead)
 	}
 }
 
-void ListPrint(ListNode* pHead)
+void SListPrint(SListNode* pHead)
 {
-	ListNode* cur = pHead;
+	SListNode* cur = pHead;
 	while (cur)
 	{
 		printf("%d->", cur->_data);
@@ -88,27 +88,27 @@ void ListPrint(ListNode* pHead)
 	printf("NULL\n");
 }
 
-void ListPushBack(ListNode** ppHead, DataType data)
+void SListPushBack(SListNode** ppHead, DataType data)
 {
-	ListNode* Head = *ppHead;
+	SListNode* Head = *ppHead;
 	if ((*ppHead) == NULL)
 	{
-		(*ppHead) = BuyListNode(data);
+		(*ppHead) = BuySListNode(data);
 		return;
 	}
 	while ((*ppHead)->_pNext != NULL)
 	{
 		(*ppHead) = (*ppHead)->_pNext;
 	}
-	(*ppHead)->_pNext = BuyListNode(data);
+	(*ppHead)->_pNext = BuySListNode(data);
 	*ppHead = Head;
 }
 
-void ListPopBack(ListNode* pHead)
+void SListPopBack(SListNode* pHead)
 {
 	assert(pHead);
-	ListNode* cur = pHead;
-	ListNode* prev = pHead;
+	SListNode* cur = pHead;
+	SListNode* prev = pHead;
 	if (cur->_pNext == NULL)
 	{
 		free(cur);
@@ -123,22 +123,22 @@ void ListPopBack(ListNode* pHead)
 	free(cur);
 }
 
-void ListPushFront(ListNode** ppHead, DataType data)
+void SListPushFront(SListNode** ppHead, DataType data)
 {
-	ListNode* NewList;
+	SListNode* NewSList;
 	if ((*ppHead) == NULL)
 	{
-		ListPushBack(ppHead, data);
+		SListPushBack(ppHead, data);
 	}
-	NewList = BuyListNode(data);
-	NewList->_pNext = (*ppHead);
-	(*ppHead) = NewList;
+	NewSList = BuySListNode(data);
+	NewSList->_pNext = (*ppHead);
+	(*ppHead) = NewSList;
 }
 
-ListNode* ListFind(ListNode* pHead, DataType data)
+SListNode* SListFind(SListNode* pHead, DataType data)
 {
 	assert(pHead);
-	ListNode* cur = pHead;
+	SListNode* cur = pHead;
 	while (cur)
 	{
 		if (cur->_data == data)
@@ -153,27 +153,27 @@ ListNode* ListFind(ListNode* pHead, DataType data)
 	return NULL;
 }
 
-void ListInsert(ListNode** ppHead, ListNode* pos, DataType data)
+void SListInsert(SListNode** ppHead, SListNode* pos, DataType data)
 {
-	ListNode* cur = (*ppHead);
+	SListNode* cur = (*ppHead);
 	if (pos == (*ppHead))
 	{
-		ListPushFront(ppHead, data);
+		SListPushFront(ppHead, data);
 		return;
 	}
 	while (cur->_pNext != pos)
 	{
 		cur = cur->_pNext;
 	}
-	cur->_pNext = BuyListNode(data);
+	cur->_pNext = BuySListNode(data);
 	cur->_pNext->_pNext = pos;
 }
 
-void ListErase(ListNode** ppHead, ListNode* pos)
+void SListErase(SListNode** ppHead, SListNode* pos)
 {
 	assert(ppHead && (*ppHead));
 	assert(pos);
-	ListNode* cur = (*ppHead);
+	SListNode* cur = (*ppHead);
 	if (cur == pos)
 	{
 		(*ppHead) = (*ppHead)->_pNext;
@@ -192,13 +192,13 @@ void ListErase(ListNode** ppHead, ListNode* pos)
 
 //链表练习
 //1.从尾打印链表
-void PrintFromTail(ListNode* pHead)
+void PrintFromTail(SListNode* pHead)
 {
 	PrintHelp(pHead);
 	printf("\n");
 }
 
-void PrintHelp(ListNode* pHead)//从尾打印链表，辅助函数
+void PrintHelp(SListNode* pHead)//从尾打印链表，辅助函数
 {
 	assert(pHead);
 	if (pHead->_pNext != NULL)
@@ -209,11 +209,11 @@ void PrintHelp(ListNode* pHead)//从尾打印链表，辅助函数
 }
 
 //2.删除一个非尾节点（不能遍历）
-void DeleteNodeNotTail(ListNode* pos)
+void DeleteNodeNotTail(SListNode* pos)
 {
 	assert(pos);
-	ListNode* cur = pos;
-	ListNode* next = pos->_pNext;
+	SListNode* cur = pos;
+	SListNode* next = pos->_pNext;
 	if (cur->_pNext == NULL)
 	{
 		printf("The node is tail.\n");
@@ -232,10 +232,10 @@ void DeleteNodeNotTail(ListNode* pos)
 }
 
 //3.无头链表一个节点前插入链表（不能遍历）
-void ListInsert1(ListNode* pos, DataType data)
+void SListInsert1(SListNode* pos, DataType data)
 {
-	ListNode* cur = pos;
-	ListNode* next = BuyListNode(cur->_data);
+	SListNode* cur = pos;
+	SListNode* next = BuySListNode(cur->_data);
 	next->_pNext = cur->_pNext;
 	next->_data = cur->_data;
 	cur->_pNext = next;
@@ -243,11 +243,11 @@ void ListInsert1(ListNode* pos, DataType data)
 }
 
 //4.单链实现约瑟夫环
-ListNode* JosephCircle(ListNode* pHead, size_t circle_num)
+SListNode* JosephCircle(SListNode* pHead, size_t circle_num)
 {
 	assert(pHead);
-	ListNode* cur = pHead;
-	ListNode* next = NULL;
+	SListNode* cur = pHead;
+	SListNode* next = NULL;
 	while (cur->_pNext)
 	{
 		cur = cur->_pNext;
@@ -270,12 +270,12 @@ ListNode* JosephCircle(ListNode* pHead, size_t circle_num)
 }
 
 //5.逆置链表
-void ReverseList(ListNode** ppHead)
+void ReverseSList(SListNode** ppHead)
 {
 	assert(*ppHead);
-	ListNode* cur = (*ppHead);
-	ListNode* new_head = NULL;
-	ListNode* next;
+	SListNode* cur = (*ppHead);
+	SListNode* new_head = NULL;
+	SListNode* next;
 	while (cur)
 	{
 		next = cur->_pNext;
@@ -287,11 +287,11 @@ void ReverseList(ListNode** ppHead)
 }
 
 //6.链表的冒泡排序
-void ListBubbleSort(ListNode* pHead)
+void SListBubbleSort(SListNode* pHead)
 {
 	assert(pHead);
-	ListNode* cur = pHead;
-	ListNode* end = NULL;
+	SListNode* cur = pHead;
+	SListNode* end = NULL;
 	while (end != pHead)
 	{
 		while (cur->_pNext != end)
@@ -310,9 +310,9 @@ void ListBubbleSort(ListNode* pHead)
 }
 
 //7.双链表合并，合并后依旧有序（归并排序思想）
-ListNode* ListUnion(ListNode* pHead1, ListNode* pHead2)
+SListNode* SListUnion(SListNode* pHead1, SListNode* pHead2)
 {
-	ListNode* new_head = NULL, *cur = NULL;
+	SListNode* new_head = NULL, *cur = NULL;
 	if (pHead1 == NULL && pHead2 == NULL)
 	{
 		return NULL;
@@ -362,11 +362,11 @@ ListNode* ListUnion(ListNode* pHead1, ListNode* pHead2)
 }
 
 //8.查找链表的中间结点（思路：快慢指针法）
-ListNode* FindMiddleNode(ListNode* pHead)
+SListNode* FindMiddleNode(SListNode* pHead)
 {
 	assert(pHead);
-	ListNode* fast = pHead;
-	ListNode* cur = pHead;
+	SListNode* fast = pHead;
+	SListNode* cur = pHead;
 	while (fast && fast->_pNext != NULL)
 	{
 		fast = fast->_pNext;
@@ -380,11 +380,11 @@ ListNode* FindMiddleNode(ListNode* pHead)
 }
 
 //9.查找链表倒数第K个结点
-ListNode* FindLastKNode(ListNode* pHead, size_t k)
+SListNode* FindLastKNode(SListNode* pHead, size_t k)
 {
 	assert(pHead);
-	ListNode* cur = pHead;
-	ListNode* end = pHead;
+	SListNode* cur = pHead;
+	SListNode* end = pHead;
 	while (k--)
 	{
 		if (end == NULL)
@@ -402,17 +402,17 @@ ListNode* FindLastKNode(ListNode* pHead, size_t k)
 }
 
 //10.删除倒数第K个节点
-void* DeleteLastKNode(ListNode** ppHead, size_t k)
+void* DeleteLastKNode(SListNode** ppHead, size_t k)
 {
-	ListErase(ppHead, FindLastKNode((*ppHead), k));
+	SListErase(ppHead, FindLastKNode((*ppHead), k));
 }
 
 //11.判断链表是否带环，带环求环长度和入口点
-ListNode* JudgeCycle(ListNode* pHead)//判断是否带环
+SListNode* JudgeCycle(SListNode* pHead)//判断是否带环
 {
 	assert(pHead);
-	ListNode* fast = pHead;
-	ListNode* slow = pHead;
+	SListNode* fast = pHead;
+	SListNode* slow = pHead;
 	while (fast)
 	{
 		slow = slow->_pNext;
@@ -429,9 +429,9 @@ ListNode* JudgeCycle(ListNode* pHead)//判断是否带环
 	return NULL;
 }
 
-size_t GetCycleLenth(ListNode* meet)//求环长度
+size_t GetCycleLenth(SListNode* meet)//求环长度
 {
-	ListNode* cur = meet;
+	SListNode* cur = meet;
 	size_t count = 1;
 	while (cur->_pNext != meet)
 	{
@@ -441,7 +441,7 @@ size_t GetCycleLenth(ListNode* meet)//求环长度
 	return count;
 }
 
-ListNode* GetCycleEntrance(ListNode* pHead, ListNode* meet)//求环的入口点
+SListNode* GetCycleEntrance(SListNode* pHead, SListNode* meet)//求环的入口点
 {
 	while (pHead != meet)
 	{
@@ -452,17 +452,17 @@ ListNode* GetCycleEntrance(ListNode* pHead, ListNode* meet)//求环的入口点
 }
 
 //12.判断链表是否相交（假设不带环）
-ListNode* JudgeCross(ListNode* pHead1, ListNode* pHead2)
+SListNode* JudgeCross(SListNode* pHead1, SListNode* pHead2)
 {
 	//两种思路：
 	//1.找到两个尾指针，若相同，相交，再长的链表先走相差的步数，两者同时走找交点
 	//2.同样的找尾指针，若相同，说明相交，将尾连任意表的头构成环，转换成求环入口问题
 	//这里只实现第一种
 	assert(pHead1 && pHead2);
-	ListNode* cur1 = pHead1;
-	ListNode* cur2 = pHead2;
-	ListNode* plong = NULL;
-	ListNode* pshort = NULL;
+	SListNode* cur1 = pHead1;
+	SListNode* cur2 = pHead2;
+	SListNode* plong = NULL;
+	SListNode* pshort = NULL;
 	int count = 0;
 	int count1 = 1, count2 = 1;
 	while (cur1->_pNext != NULL)//均走到尾，若尾指针相同，说明相交
@@ -503,11 +503,11 @@ ListNode* JudgeCross(ListNode* pHead1, ListNode* pHead2)
 }
 
 //13.判断链表是否相交（设链表可以带环）
-ListNode* JudgeCrossCycle(ListNode* pHead1, ListNode* pHead2)
+SListNode* JudgeCrossCycle(SListNode* pHead1, SListNode* pHead2)
 {
-	ListNode* cur1 = JudgeCycle(pHead1);
-	ListNode* cur2 = JudgeCycle(pHead2);
-	ListNode* traversal = NULL;
+	SListNode* cur1 = JudgeCycle(pHead1);
+	SListNode* cur2 = JudgeCycle(pHead2);
+	SListNode* traversal = NULL;
 	if (cur1 == NULL && cur2 == NULL)//情况1：都不带环
 	{
 		return JudgeCross(pHead1, pHead2);
