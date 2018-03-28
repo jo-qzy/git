@@ -25,7 +25,7 @@ int StackEmpty(Stack* s);
 Stack* StackInit()
 {
 	Stack* newstack = (Stack*)malloc(sizeof(Stack));
-	newstack->_array = (DataType*)malloc(sizeof(int) * size);
+	newstack->_array = (DataType*)malloc(sizeof(DataType) * size);
 	newstack->_end = 0;
 	newstack->_top = 0;
 	return newstack;
