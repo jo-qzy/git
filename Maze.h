@@ -10,12 +10,18 @@
 #define row 6
 #define col 6
 
+int stack_flag = 0;
+int shortest = 0;
+
 typedef struct Pos
 {
 	size_t _row;
 	size_t _col;
 }Pos;
 
+/////////////////////////////////////////////////
+////栈部分///////////
+///////////////////////////////////
 typedef Pos DataType;
 
 typedef struct Stack
@@ -31,20 +37,24 @@ void StackPop(Stack* s);
 DataType StackTop(Stack* s);
 size_t StackSize(Stack* s);
 int StackEmpty(Stack* s);
+/////////////////////////////
+////////////////////////////////
 
-
-
+////////////迷宫部分
 typedef struct Maze
 {
 	int _map[row][col];
-	Pos _entry;
+	//Pos _entry;
 }Maze;
 
-void MazeInit(Maze* m, int map[][col]);
-void GetEntry(Maze* m, Pos entry);
-void GetPath(Maze* m, Stack* s);
-void PrintMaze(Maze* m);
-int Check(Maze* m, Pos pos);
+void MazeInit(Maze* m, int map[][col]);//初始化
+void GetPath(Maze* m, Pos entry, int flag);//在地图上标记所有可走路径
+void GetShortPath(Maze* m, Pos entry, Stack* s);//获取最短路径，如果多条相等，获取其中一条
+void PrintMaze(Maze* m);//打印地图
+void PrintPath(Stack* s);//打印路径
+int CheckIsAccess(Maze* m, Pos pos, int flag);//判断路径是否可通
+
+void test();//测试用例
 
 void MazeInit(Maze* m, int map[][col])
 {
@@ -58,61 +68,125 @@ void MazeInit(Maze* m, int map[][col])
 	}
 }
 
-void GetEntry(Maze* m, Pos entry)
+//void GetEntry(Maze* m, Pos entry)
+//{
+//	m->_entry._row = entry._row;
+//	m->_entry._col = entry._col;
+//}
+
+void GetPath(Maze* m, Pos entry, int flag)
 {
-	m->_entry._row = entry._row;
-	m->_entry._col = entry._col;
+	Pos next = entry;
+	m->_map[entry._row][entry._col] = flag + 1;//入口标记为2，下一步标为前一步 + 1
+	if (flag != 1)//判出口部分，flag设置防止直接在入口处退出
+	{
+		if ((entry._col == 0) || (entry._col == col - 1) || (entry._row == 0) || (entry._row == row - 1))
+		{
+			if (shortest == 0)//获取长度
+			{
+				shortest = flag;
+			}
+			else if (shortest > flag)
+			{
+				shortest = flag;
+			}
+			return;
+		}
+	}
+	//上
+	next = entry;
+	next._row = next._row - 1;
+	if (CheckIsAccess(m, next, flag + 1))
+	{
+		GetPath(m, next, flag + 1);//递归实现
+	}
+	//下
+	next = entry;
+	next._row = next._row + 1;
+	if (CheckIsAccess(m, next, flag + 1))
+	{
+		GetPath(m, next, flag + 1);
+	}
+	//左
+	next = entry;
+	next._col = next._col - 1;
+	if (CheckIsAccess(m, next, flag + 1))
+	{
+		GetPath(m, next, flag + 1);
+	}
+	//右
+	next = entry;
+	next._col = next._col + 1;
+	if (CheckIsAccess(m, next, flag + 1))
+	{
+		GetPath(m, next, flag + 1);
+	}
 }
 
-void GetPath(Maze* m, Stack* s)
+void GetShortPath(Maze* m, Pos entry, Stack* s)
 {
-	Pos cur, next;
-	StackPush(s, m->_entry);
-	while (StackEmpty(s) != 0)
+	Pos next = entry;
+	if (m->_map[entry._row][entry._col] != 2)
 	{
-		cur = StackTop(s);
-		
-		cur._row += 1;
-		if (Check(m, cur))
+		if ((entry._col == 0) || (entry._col == col - 1) || (entry._row == 0) || (entry._row == row - 1))
+			//返回条件
 		{
-			m->_map[cur._row][cur._col] = 2;
-			StackPush(s, cur);
-			continue;
-		}
-		cur = StackTop(s);
-		cur._row -= 1;
-		if (Check(m, cur))
-		{
-			m->_map[cur._row][cur._col] = 2;
-			StackPush(s, cur);
-			continue;
-		}
-		cur = StackTop(s);
-		cur._col += 1;
-		if (Check(m, cur))
-		{
-			m->_map[cur._row][cur._col] = 2;
-			StackPush(s, cur);
-			continue;
-		}
-		cur = StackTop(s);
-		cur._col -= 1;
-		if (Check(m, cur))
-		{
-			m->_map[cur._row][cur._col] = 2;
-			StackPush(s, cur);
-			continue;
-		}
-		
-		StackPop(s);
-		/*if (cur._col == 0 || cur._col == col - 1 || cur._row == 0 || cur._row == row - 1)
-		{
-			printf("find way!\n");
+			if (m->_map[entry._row][entry._col] - 1 == shortest)
+			{
+				stack_flag = 1;//入栈开始标志
+				StackPush(s, entry);
+			}
 			return;
-		}*/
-
+		}
 	}
-	printf("no way out\n");
+	//上
+	next = entry;
+	next._row = next._row - 1;
+	if (m->_map[next._row][next._col] == m->_map[entry._row][entry._col] + 1)
+	{
+		GetShortPath(m, next, s);
+		if (stack_flag == 1)
+		{
+			StackPush(s, entry);
+			return;//不需要所有分叉均走，得到节点立即返回
+		}
+	}
+	//下
+	next = entry;
+	next._row = next._row + 1;
+	if (m->_map[next._row][next._col] == m->_map[entry._row][entry._col] + 1)
+	{
+		GetShortPath(m, next, s);
+		if (stack_flag == 1)
+		{
+			StackPush(s, entry);
+			return;
+		}
+	}
+	//左
+	next = entry;
+	next._col = next._col - 1;
+	if (m->_map[next._row][next._col] == m->_map[entry._row][entry._col] + 1)
+	{
+		GetShortPath(m, next, s);
+		if (stack_flag == 1)
+		{
+			StackPush(s, entry);
+			return;
+		}
+	}
+	//右
+	next = entry;
+	next._col = next._col + 1;
+	if (m->_map[next._row][next._col] == m->_map[entry._row][entry._col] + 1)
+	{
+		GetShortPath(m, next, s);
+		if (stack_flag == 1)
+		{
+			StackPush(s, entry);
+			return;
+		}
+	}
 }
 
 void PrintMaze(Maze* m)
@@ -122,26 +196,37 @@ void PrintMaze(Maze* m)
 	{
 		for (j = 0; j < col; j++)
 		{
-			printf("%d  ",m->_map[i][j]);
+			printf("%d  ", m->_map[i][j]);
 		}
 		printf("\n");
 	}
 	printf("\n");
 }
 
-int Check(Maze* m, Pos pos)
+void PrintPath(Stack* s)
 {
-	if (pos._col < col && pos._row < row)
+	while (StackEmpty(s) != 0)
 	{
-		if(m->_map[pos._row][pos._col] == 1)
-		{ 
+		printf("(%d,%d)->", StackTop(s)._row, StackTop(s)._col);
+		StackPop(s);
+	}
+	printf("Exit\n");
+}
+
+int CheckIsAccess(Maze* m, Pos pos, int flag)
+{
+	if (pos._col < col && pos._row < row)//判断边界
+	{
+		if ((m->_map[pos._row][pos._col] == 1) || (m->_map[pos._row][pos._col] >= flag))//判断路径是否可通
+		//
+		{
 			return 1;
 		}
 	}
 	return 0;
 }
 
-
+//测试用例
 void test()
 {
 	Maze m;
@@ -149,17 +234,18 @@ void test()
 	Pos entry = { 5,1 };
 	int map[row][col] = {
 		{ 0,0,0,0,0,0 },
-		{ 0,0,1,1,1,1 },
-		{ 0,0,1,0,0,0 },
+		{ 0,0,1,1,1,0 },
+		{ 0,0,1,0,1,0 },
 		{ 0,0,1,1,1,1 },
 		{ 0,1,1,0,0,0 },
 		{ 0,1,0,0,0,0 },
 	};
 	MazeInit(&m, map);
 	PrintMaze(&m);
-	GetEntry(&m, entry);
-	GetPath(&m, s);
+	GetPath(&m, entry, 1);
 	PrintMaze(&m);
+	GetShortPath(&m, entry, s);
+	PrintPath(s);
 }
 
 //栈部分
