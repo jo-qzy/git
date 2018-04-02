@@ -59,16 +59,16 @@ void InExpToPoExp(Exp exp[], Stack* s)
 	{
 		if (exp[exp_index]._op == 1)
 		{
-			tmp[tmp_index] = exp[exp_index];
+			tmp[tmp_index] = exp[exp_index];//逆波兰表达式不需要考虑数字，直接拷贝即可
 			tmp_index++;
 		}
 		else
 		{
 			if (StackEmpty(s) == 0)
 			{
-				StackPush(s, exp[exp_index]);
+				StackPush(s, exp[exp_index]);//栈为空符号直接压栈
 			}
-			else if (exp[exp_index]._op > prev._op)
+			else if (exp[exp_index]._op > prev._op)//判断符号优先级问题，压栈操作
 			{
 				StackPush(s, exp[exp_index]);
 			}
@@ -89,7 +89,7 @@ void InExpToPoExp(Exp exp[], Stack* s)
 	}
 	while (StackEmpty(s) != 0)
 	{
-		tmp[tmp_index] = StackTop(s);
+		tmp[tmp_index] = StackTop(s);//将符号全部移出栈放入表达式
 		StackPop(s);
 		tmp_index++;
 	}
@@ -99,7 +99,7 @@ void InExpToPoExp(Exp exp[], Stack* s)
 	}
 }
 
-int Calculate(Exp exp[],Stack* s)
+int Calculate(Exp exp[],Stack* s)//逆波兰表达式的运算
 {
 	int exp_index = 0;
 	int right = 0, left = 0;
