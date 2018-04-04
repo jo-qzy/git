@@ -250,7 +250,7 @@ SListNode* JosephCircle(SListNode* pHead, size_t circle_num)
 	SListNode* next = NULL;
 	while (cur->_pNext)
 	{
-		cur = cur->_pNext;
+		cur = cur->_pNext;//链表成环
 	}
 	cur->_pNext = pHead;
 	cur = cur->_pNext;
@@ -259,7 +259,7 @@ SListNode* JosephCircle(SListNode* pHead, size_t circle_num)
 		size_t count = circle_num;
 		while (--count)
 		{
-			cur = cur->_pNext;
+			cur = cur->_pNext;//找到每次要删除的节点
 		}
 		next = cur->_pNext;
 		cur->_data = next->_data;
