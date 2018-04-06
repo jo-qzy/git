@@ -67,7 +67,11 @@ int StackEmpty(Stack* s)
 
 
 //面试题
-//两个栈实现一个队列
+//1.两个栈实现一个队列
+void QuequePush_Stack(Stack* s1, DataType data);
+DataType QuequePop_Stack(Stack* s1, Stack* s2);
+void test_2StoQ();
+
 void QuequePush_Stack(Stack* s1, DataType data)
 {
 	StackPush(s1, data);
@@ -108,3 +112,5 @@ void test_2StoQ()//测试用例
 	printf("%d\n", QuequePop_Stack(s1, s2));
 	printf("%d\n", QuequePop_Stack(s1, s2));
 }
+
+//2.实现栈的出栈入栈，可以出其中的最小值
