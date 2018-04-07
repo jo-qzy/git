@@ -102,6 +102,11 @@ typedef struct QueueStack
 	Queue* _q2;
 }QueueStack;
 
+QueueStack* Stack_QueueInit();
+void StackPush_Queue(QueueStack* qs, DataType data);
+void StackPop_Queue(QueueStack* qs);
+DataType StackTop_Queue(QueueStack* qs);
+
 QueueStack* Stack_QueueInit()
 {
 	QueueStack* new_qs = (QueueStack*)malloc(sizeof(QueueStack));
