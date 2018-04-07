@@ -93,3 +93,71 @@ int QueueEmpty(Queue* q)
 	}
 	return 1;
 }
+
+//面试题
+//两个队列实现一个栈
+typedef struct QueueStack
+{
+	Queue* _q1;
+	Queue* _q2;
+}QueueStack;
+
+QueueStack* Stack_QueueInit()
+{
+	QueueStack* new_qs = (QueueStack*)malloc(sizeof(QueueStack));
+	QueueInit(new_qs->_q1);
+	QueueInit(new_qs->_q2);
+	return new_qs;
+}
+
+void StackPush_Queue(QueueStack* qs, DataType data)
+{
+	if (QueueEmpty(qs->_q1) == 0)
+	{
+		QueuePush(qs->_q2, data);
+	}
+	else
+	{
+		QueuePush(qs->_q1, data);
+	}
+}
+
+void StackPop_Queue(QueueStack* qs)
+{
+	assert(qs);
+	Queue* op = NULL;
+	Queue* empty = NULL;
+	if (QueueEmpty(qs->_q1) == 0)
+	{
+		op = qs->_q2;
+		empty = qs->_q1;
+	}
+	else
+	{
+		op = qs->_q1;
+		empty = qs->_q2;
+	}
+	while (QueueSize(op) != 1)
+	{
+		DataType tmp = QueueFront(op);
+		QueuePop(op);
+		QueuePush(empty, tmp);
+	}
+	QueuePop(op);
+}
+
+DataType StackTop_Queue(QueueStack* qs)
+{
+	if ((QueueEmpty(qs->_q1) == 0) && (QueueEmpty(qs->_q2) == 0))
+	{
+		assert(1);
+	}
+	if (QueueEmpty(qs->_q1) == 0)
+	{
+		return QueueBack(qs->_q2);
+	}
+	else
+	{
+		return QueueBack(qs->_q1);
+	}
+}
