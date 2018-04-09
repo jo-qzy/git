@@ -186,7 +186,7 @@ DataType StackTop_Queue(QueueStack* qs)
 {
 	if ((QueueEmpty(qs->_q1) == 0) && (QueueEmpty(qs->_q2) == 0))
 	{
-		assert(1);
+		assert(0);
 	}
 	if (QueueEmpty(qs->_q1) == 0)
 	{
