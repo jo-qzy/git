@@ -93,7 +93,7 @@ DataType QuequePop_Stack(Stack* s1, Stack* s2)
 	DataType ret;
 	if (StackEmpty(s1) == 0 && StackEmpty(s2) == 0)
 	{
-		assert(1);
+		assert(0);
 	}
 	if (StackEmpty(s2) != 0)
 	{
@@ -167,7 +167,7 @@ void MinStackPop(MinStack* ms)
 	assert(ms);
 	if (StackEmpty(ms->_st) == 0)
 	{
-		assert(1);
+		assert(0);
 	}
 	if (StackTop(ms->_st) == StackTop(ms->_min))
 	{
