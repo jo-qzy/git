@@ -54,7 +54,11 @@ void StackPop(Stack* s)
 
 DataType StackTop(Stack* s)
 {
-	return *(s->_array + s->_top - 1);
+	if (StackEmpty(s))
+	{
+		return *(s->_array + s->_top - 1);
+	}
+	return -1;
 }
 
 size_t StackSize(Stack* s)
@@ -362,4 +366,45 @@ void TestUnionStack()
 	printf("%d\n", UStackTop(us, 2));
 	printf("栈1容量：%d\n", UStackSize(us, 1));
 	printf("栈2容量：%d\n", UStackSize(us, 2));
+}
+
+//4.判断入栈序列是否合法
+void JudgeSeqLegal(const DataType dst[], const DataType src[], size_t _size)
+{
+	Stack* s = StackInit();
+	size_t src_index = 0;
+	size_t dst_index = 0;
+	while (dst_index != _size)
+	{
+		if (dst[dst_index] == src[src_index])
+		{
+			dst_index++, src_index++;
+		}
+		else
+		{
+			if (StackTop(s) == dst[dst_index] && StackEmpty(s))
+			{
+				StackPop(s);
+				dst_index++;
+			}
+			else
+			{
+				StackPush(s, src[src_index]);
+				src_index++;
+			}
+		}
+		if (StackEmpty(s) != 0 && src_index == _size && StackTop(s) != dst[dst_index])
+		{
+			printf("序列不合法\n");
+			return;
+		}
+	}
+	printf("序列合法\n");
+}
+
+void TestJudgeSeqLegal()
+{
+	int arr[5] = { 1,2,3,4,5 };
+	int arr2[5] = { 1,5,3,2,4 };
+	JudgeSeqLegal(arr2, arr, 5);
 }
