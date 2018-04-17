@@ -20,18 +20,17 @@ typedef struct BinaryTreeNode
 	DataType _data;
 }BTNode;
 
-BTNode* BuyBTNode(DataType x);
-// 创建二叉树 
-BTNode* CreateBTree(DataType* a, size_t* pIndex, DataType invalid);
-void BTreePrevOrder(BTNode* root);
-void BTreeInOrder(BTNode* root);
-void BTreePostOrder(BTNode* root);
+BTNode* BuyBTNode(DataType x);//申请空间
+BTNode* CreateBTree(DataType* a, size_t* pIndex, DataType invalid);//创建二叉树
+void BTreePrevOrder(BTNode* root);//递归前序遍历
+void BTreeInOrder(BTNode* root);//递归中序遍历
+void BTreePostOrder(BTNode* root);//递归后序遍历
 
-size_t BTreeSize(BTNode* root);
-size_t BTreeLeafSize(BTNode* root);
-size_t BTreeKLevelSize(BTNode* root, size_t k);
-size_t BTreeDepth(BTNode* root);
-BTNode* BTreeFind(BTNode* root, DataType x);
+size_t BTreeSize(BTNode* root);//树节点个数
+size_t BTreeLeafSize(BTNode* root);//树叶子节点个数
+size_t BTreeKLevelSize(BTNode* root, size_t k);//第k层节点个数
+size_t BTreeDepth(BTNode* root);//求树深度
+BTNode* BTreeFind(BTNode* root, DataType x);//寻找指定节点
 void BTreeLevelOrder(BTNode* root);
 // 判断完全二叉树 
 int IsCompleteBTree(BTNode* root);
@@ -103,13 +102,14 @@ size_t BTreeSize(BTNode* root)
 	{
 		return 0;
 	}
+	//当前节点加左树和右树节点
 	return 1 + BTreeSize(root->_left) + BTreeSize(root->_right);
 }
 
 size_t BTreeLeafSize(BTNode* root)
 {
 	static int count = 0;
-	if (root == NULL)
+	if (root == NULL)//不判空出错
 	{
 		return 0;
 	}
@@ -130,6 +130,8 @@ size_t BTreeKLevelSize(BTNode* root, size_t k)
 	{
 		return 1;
 	}
+	//求第k层节点相当于求
+	//左树第k-1层节点加右树第k-1层节点
 	return BTreeKLevelSize(root->_left, k - 1) + BTreeKLevelSize(root->_right, k - 1);
 }
 
@@ -141,7 +143,7 @@ size_t BTreeDepth(BTNode* root)
 	}
 	size_t left = BTreeDepth(root->_left);
 	size_t right = BTreeDepth(root->_right);
-	return 1 + (left < right ? right : left);
+	return 1 + (left < right ? right : left);//返回左树右树中较大的深度加当前层
 }
 
 BTNode* BTreeFind(BTNode* root, DataType x)
@@ -156,6 +158,7 @@ BTNode* BTreeFind(BTNode* root, DataType x)
 	}
 	BTNode* left = BTreeFind(root->_left, x);
 	BTNode* right = BTreeFind(root->_right, x);
+	//左右判空，若有一个不为空，说明找到，返回该地址至上层
 	if (left != NULL)
 	{
 		return left;
@@ -164,7 +167,7 @@ BTNode* BTreeFind(BTNode* root, DataType x)
 	{
 		return right;
 	}
-	return NULL;
+	return NULL;//未找到返回空
 }
 
 void BTreeLevelOrder(BTNode* root);
