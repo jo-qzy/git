@@ -20,29 +20,40 @@ snake* head;//蛇头
 snake* tail;//蛇尾
 snake food;
 short key = VK_RIGHT;
-int speed = 50;
+int speed = 500;
+int score = 0;
+int next_level = 30;
 
-void Pos(int x, int y);//移动光标函数
-void SnakeInit();//初始化蛇
-void GetFood();
-void FoodPrint();
-int SnakeFoodJudge();
-void GameCycle();
-void Pause();
-void SnakeMove();
+static void Pos(int x, int y);//移动光标函数
+static void SnakeInit();//初始化蛇
+static void GetFood();
+static void FoodPrint();
+static int SnakeFoodJudge();
+static void GameCycle();
+static void Pause();
+static void SnakeMove();
+static void DoNotBitYourself();
+static void StayAwayFromWall();
 void GameEntrance();
 
-void Pos(int x, int y)//获取
+static void PrintGameWall();
+static void Welcome();
+
+static void Pos(int x, int y)//获取
 {
 	COORD pos;
 	HANDLE output;
+	CONSOLE_CURSOR_INFO cci;
 	pos.X = x;
 	pos.Y = y;
 	output = GetStdHandle(STD_OUTPUT_HANDLE);
 	SetConsoleCursorPosition(output, pos);
+	GetConsoleCursorInfo(output, &cci);//获取当前光标信息
+	cci.bVisible = false;//设置光标不可见
+	SetConsoleCursorInfo(output, &cci);
 }
 
-void SnakeInit()
+static void SnakeInit()
 {
 	snake* cur = NULL;
 	int i = 0;
@@ -68,7 +79,7 @@ void SnakeInit()
 	}
 }
 
-void GetFood()
+static void GetFood()
 {
 	srand((unsigned int)time(0));
 	do
@@ -79,13 +90,13 @@ void GetFood()
 	FoodPrint();
 }
 
-void FoodPrint()
+static void FoodPrint()
 {
 	Pos(food.x, food.y);
 	printf("■");
 }
 
-int SnakeFoodJudge()
+static int SnakeFoodJudge()
 {
 	snake* cur = head;
 	while (cur != NULL)
@@ -99,7 +110,7 @@ int SnakeFoodJudge()
 	return 1;
 }
 
-void GameCycle()
+static void GameCycle()
 {
 	while (1)
 	{
@@ -125,11 +136,20 @@ void GameCycle()
 			Pause();
 		}
 		SnakeMove();
+		DoNotBitYourself();
+		StayAwayFromWall();
+		if ((score == next_level) && (speed >= 10))
+		{
+			speed -= 10;
+			next_level += 30;
+			Pos(75, 12);
+			printf("当前移动速度：每隔%d毫秒移动向前移动", speed);
+		}
 		Sleep(speed);
 	}
 }
 
-void Pause()
+static void Pause()
 {
 	while (1)
 	{
@@ -141,7 +161,7 @@ void Pause()
 	}
 }
 
-void SnakeMove()
+static void SnakeMove()
 {
 	snake* cur = NULL;
 	cur = (snake*)malloc(sizeof(snake));
@@ -170,11 +190,18 @@ void SnakeMove()
 	printf("■");
 	if ((head->x == food.x) && (head->y == food.y))
 	{
+		score += 10;
+		Pos(75, 11);
+		printf("得分：%d", score);
 		GetFood();
 		return;
 	}
-	Pos(tail->x, tail->y);
-	printf("  ");
+	if ((head->x != tail->x) || (head->y != tail->y))
+	{
+		Pos(tail->x, tail->y);
+		printf("  ");
+		
+	}
 	while (cur->pNext->pNext != NULL)
 	{
 		cur = cur->pNext;
@@ -184,11 +211,57 @@ void SnakeMove()
 	tail->pNext = NULL;
 }
 
-//UI部分
-void PrintGameWall();
-void Welcome();
+static void DoNotBitYourself()
+{
+	snake* cur = head->pNext;
+	while (cur != NULL)
+	{
+		if ((head->x == cur->x) && (head->y == cur->y))
+		{
+			Pos(_LENTH, _WIDTH / 2);
+			printf("游戏结束你咬到自己了\n");
+			Pos(_LENTH, _WIDTH / 2 + 1);
+			system("pause");
+			exit(0);
+		}
+		cur = cur->pNext;
+	}
+}
 
-void PrintGameWall()
+static void StayAwayFromWall()
+{
+	if ((head->x == 0) || (head->x == (_LENTH + 1) * 2) || (head->y == 0) || (head->y == _WIDTH + 1))
+	{
+		Pos(_LENTH, _WIDTH / 2);
+		printf("游戏结束你撞墙了\n");
+		Pos(_LENTH, _WIDTH / 2 + 1);
+		system("pause");
+		exit(0);
+	}
+}
+
+void GameEntrance()
+{
+	Welcome();
+	Pos(75, 11);
+	printf("得分：%d", score);
+	Pos(75, 12);
+	printf("当前移动速度：每隔%d毫秒移动向前移动", speed);
+	Pos(75, 13);
+	printf("每获得30分速度会加快");
+	Pos(75, 14);
+	printf("不能撞墙不能撞自己");
+	Pos(75, 15);
+	printf("按空格可以暂停……");
+	PrintGameWall();
+	SnakeInit();
+	Pos(40, 20);
+	GetFood();
+	GameCycle();
+}
+
+//UI部分
+static void PrintGameWall()
 {
 	int x = 0, y = 0;
 	for (x = 0; x < (_LENTH + 1) * 2; x += 2)
@@ -207,7 +280,7 @@ void PrintGameWall()
 	}
 }
 
-void Welcome()
+static void Welcome()
 {
 	Pos(28, 10);
 	printf("欢迎来到贪吃蛇");
@@ -222,14 +295,4 @@ void Welcome()
 	Pos(28, 15);
 	system("pause");
 	system("cls");
-}
-
-void GameEntrance()
-{
-	Welcome();
-	PrintGameWall();
-	SnakeInit();
-	Pos(40, 20);
-	GetFood();
-	GameCycle();
 }
