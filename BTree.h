@@ -4,11 +4,11 @@
 #include <windows.h>
 #include <stdlib.h>
 
-typedef int DataType;
+typedef int BTreeDataType;
 
 //typedef struct TreeNode 
 //{ 
-//	DataType _data; 
+//	BTreeDataType _data; 
 //	struct TreeNode* _firstChild; 
 //	struct TreeNode* _nextBrother; 
 //}TreeNode; 
@@ -17,11 +17,13 @@ typedef struct BinaryTreeNode
 {
 	struct BinaryTreeNode* _left;
 	struct BinaryTreeNode* _right;
-	DataType _data;
+	BTreeDataType _data;
 }BTNode;
 
-BTNode* BuyBTNode(DataType x);//申请空间
-BTNode* CreateBTree(DataType* a, size_t* pIndex, DataType invalid);//创建二叉树
+#include "queue.h"
+
+BTNode* BuyBTNode(BTreeDataType x);//申请空间
+BTNode* CreateBTree(BTreeDataType* a, size_t* pIndex, BTreeDataType invalid);//创建二叉树
 void BTreePrevOrder(BTNode* root);//递归前序遍历
 void BTreeInOrder(BTNode* root);//递归中序遍历
 void BTreePostOrder(BTNode* root);//递归后序遍历
@@ -30,8 +32,8 @@ size_t BTreeSize(BTNode* root);//树节点个数
 size_t BTreeLeafSize(BTNode* root);//树叶子节点个数
 size_t BTreeKLevelSize(BTNode* root, size_t k);//第k层节点个数
 size_t BTreeDepth(BTNode* root);//求树深度
-BTNode* BTreeFind(BTNode* root, DataType x);//寻找指定节点
-void BTreeLevelOrder(BTNode* root);
+BTNode* BTreeFind(BTNode* root, BTreeDataType x);//寻找指定节点
+void BTreeLevelOrder(BTNode* root);//层序遍历
 // 判断完全二叉树 
 int IsCompleteBTree(BTNode* root);
 int IsCompleteBTree1(BTNode* root); // flag的方式判断 
@@ -40,7 +42,7 @@ void BTreePrevOrderNonR(BTNode* root);
 void BTreeInOrderNonR(BTNode* root);
 void BTreePostOrderNonR(BTNode* root);
 
-BTNode* BuyBTNode(DataType x)
+BTNode* BuyBTNode(BTreeDataType x)
 {
 	BTNode* new_node = (BTNode*)malloc(sizeof(BTNode));
 	new_node->_data = x;
@@ -49,7 +51,7 @@ BTNode* BuyBTNode(DataType x)
 	return new_node;
 }
 
-BTNode* CreateBTree(DataType* a, size_t* pIndex, DataType invalid)
+BTNode* CreateBTree(BTreeDataType* a, size_t* pIndex, BTreeDataType invalid)
 {
 	BTNode* root = NULL;
 	if (*(a + *pIndex) != invalid)
@@ -146,7 +148,7 @@ size_t BTreeDepth(BTNode* root)
 	return 1 + (left < right ? right : left);//返回左树右树中较大的深度加当前层
 }
 
-BTNode* BTreeFind(BTNode* root, DataType x)
+BTNode* BTreeFind(BTNode* root, BTreeDataType x)
 {
 	if (root == NULL)
 	{
@@ -170,7 +172,32 @@ BTNode* BTreeFind(BTNode* root, DataType x)
 	return NULL;//未找到返回空
 }
 
-void BTreeLevelOrder(BTNode* root);
+void BTreeLevelOrder(BTNode* root)
+{
+	if (root == NULL)
+	{
+		return;
+	}
+	Queue* q = QueueInit();
+	QueuePush(q, root);
+	while (QueueEmpty(q))
+	{
+		BTNode* cur = QueueFront(q);
+		QueuePop(q);
+		printf("%d ", cur->_data);
+		if (cur->_left != NULL)
+		{
+			QueuePush(q, cur->_left);
+		}
+		if (cur->_right != NULL)
+		{
+			QueuePush(q, cur->_right);
+		}
+		
+	}
+	printf("\n");
+	QueueDestroy(q);
+}
 
 void TestBinaryTree()
 {
@@ -192,5 +219,5 @@ void TestBinaryTree()
 	printf("Node 5:%#p\n", tree->_right->_left);
 	printf("BTreeFind:%#p\n", BTreeFind(tree, 6));
 	//printf("IsCompleteBTree?%d\n", IsCompleteBTree1(tree));
-	//BTreeLevelOrder(tree);
+	BTreeLevelOrder(tree);
 }
