@@ -6,13 +6,6 @@
 
 typedef int BTreeDataType;
 
-//typedef struct TreeNode 
-//{ 
-//	BTreeDataType _data; 
-//	struct TreeNode* _firstChild; 
-//	struct TreeNode* _nextBrother; 
-//}TreeNode; 
-
 typedef struct BinaryTreeNode
 {
 	struct BinaryTreeNode* _left;
@@ -21,6 +14,7 @@ typedef struct BinaryTreeNode
 }BTNode;
 
 #include "queue.h"
+#include "stack.h"
 
 BTNode* BuyBTNode(BTreeDataType x);//申请空间
 BTNode* CreateBTree(BTreeDataType* a, size_t* pIndex, BTreeDataType invalid);//创建二叉树
@@ -159,17 +153,12 @@ BTNode* BTreeFind(BTNode* root, BTreeDataType x)
 		return root;
 	}
 	BTNode* left = BTreeFind(root->_left, x);
-	BTNode* right = BTreeFind(root->_right, x);
 	//左右判空，若有一个不为空，说明找到，返回该地址至上层
 	if (left != NULL)
 	{
 		return left;
 	}
-	if (right != NULL)
-	{
-		return right;
-	}
-	return NULL;//未找到返回空
+	return BTreeFind(root->_right, x);//返回右，无论是否为空
 }
 
 void BTreeLevelOrder(BTNode* root)
@@ -182,7 +171,7 @@ void BTreeLevelOrder(BTNode* root)
 	QueuePush(q, root);
 	while (QueueEmpty(q))
 	{
-		BTNode* cur = QueueFront(q);
+		BTNode* cur = QueueFront(q);//涉及队列的使用需要用我写的队列配合使用
 		QueuePop(q);
 		printf("%d ", cur->_data);
 		if (cur->_left != NULL)
@@ -199,25 +188,180 @@ void BTreeLevelOrder(BTNode* root)
 	QueueDestroy(q);
 }
 
+int IsCompleteBTree(BTNode* root)
+{
+	if (root == NULL)
+	{
+		return 1;
+	}
+	Queue* q = QueueInit();
+	QueuePush(q, root);
+	while (QueueEmpty(q))
+	{
+		BTNode* cur = QueueFront(q);
+		if (QueueFront(q) == NULL)
+		{
+			QueuePop(q);
+			break;
+		}
+		if (cur != NULL)
+		{
+			QueuePush(q, cur->_left);
+			QueuePush(q, cur->_right);
+			QueuePop(q);
+		}
+	}
+	while (QueueEmpty(q))
+	{
+		BTNode* cur = QueueFront(q);
+		QueuePop(q);
+		if (cur != NULL)
+		{
+			return 0;
+		}
+	}
+	QueueDestroy(q);
+	return 1;
+}
+
+int IsCompleteBTree1(BTNode* root)
+{
+	if (root == NULL)
+	{
+		return 1;
+	}
+	Queue* q = QueueInit();
+	QueuePush(q, root);
+	int flag = 0;
+	while (QueueEmpty(q))
+	{
+		BTNode* cur = QueueFront(q);
+		QueuePop(q);
+		if (cur != NULL && flag == 1)
+		{
+			return 0;
+		}
+		if (cur == NULL)
+		{
+			flag = 1;
+		}
+		else
+		{
+			QueuePush(q, cur->_left);
+			QueuePush(q, cur->_right);
+		}
+	}
+	QueueDestroy(q);
+	return 1;
+}
+
+void BTreePrevOrderNonR(BTNode* root)
+{
+	if (root == NULL)
+	{
+		return;
+	}
+	Stack* s = StackInit();
+	BTNode* cur = root;
+	while (cur || (StackEmpty(s) != 0))
+	{
+		while (cur)
+		{
+			printf("%d ", cur->_data);
+			StackPush(s, cur);
+			cur = cur->_left;
+		}
+		BTNode* front = StackTop(s);
+		StackPop(s);
+		cur = front->_right;
+	}
+	StackDestroy(s);
+	printf("\n");
+}
+
+void BTreeInOrderNonR(BTNode* root)
+{
+	if (root == NULL)
+	{
+		return;
+	}
+	Stack* s = StackInit();
+	BTNode* cur = root;
+	while (cur || (StackEmpty(s) != 0))
+	{
+		while (cur)
+		{
+			StackPush(s, cur);
+			cur = cur->_left;
+		}
+		BTNode* front = StackTop(s);
+		StackPop(s);
+		printf("%d ", front->_data);
+		cur = front->_right;
+	}
+	StackDestroy(s);
+	printf("\n");
+}
+
+void BTreePostOrderNonR(BTNode* root)
+{
+	if (root == NULL)
+	{
+		return;
+	}
+	Stack* s = StackInit();
+	BTNode* cur = root;
+	BTNode* last = NULL;//最后一个访问的节点
+	while (cur || (StackEmpty(s) != 0))
+	{
+		while (cur)
+		{
+			StackPush(s, cur);
+			cur = cur->_left;
+		}
+		BTNode* front = StackTop(s);
+		if ((front->_right == NULL) || (front->_right == last))
+		{
+			printf("%d ", front->_data);
+			StackPop(s);
+			last = front;
+		}
+		else
+		{
+			cur = front->_right;
+		}
+	}
+	printf("\n");
+}
+
 void TestBinaryTree()
 {
-	int a[] = { 1, 2, 3, '#', '#',4,'#', '#', 5, 6,'#' ,'#' ,'#' };
+	int a[] = { 1, 2, 3, '#', '#', 4 , '#', '#', 5, 6, '#', '#', '#' };
 	size_t index = 0;
 	BTNode* tree = CreateBTree(a, &index, '#');
+	printf("BTreePrevOrder:");
 	BTreePrevOrder(tree);
 	printf("\n");
-	//BTreePrevOrderNonR(tree);
+	printf("BTreePrevOrderNonR:");
+	BTreePrevOrderNonR(tree);
+	printf("BTreeInOrder:");
 	BTreeInOrder(tree);
 	printf("\n");
+	printf("BTreeInOrderNonR:");
+	BTreeInOrderNonR(tree);
+	printf("BTreePostOrder:");
 	BTreePostOrder(tree);
 	printf("\n");
+	printf("BTreePostOrderNonR:");
+	BTreePostOrderNonR(tree);
 
 	printf("BTreeSize:%d\n", BTreeSize(tree));
 	printf("BTreeLeafSize:%d\n", BTreeLeafSize(tree));
 	printf("BTreeKLevelSize:%d\n", BTreeKLevelSize(tree, 2));
 	printf("BTreeDepth:%d\n", BTreeDepth(tree));
-	printf("Node 5:%#p\n", tree->_right->_left);
+	printf("Node 6:%#p\n", tree->_right->_left);
 	printf("BTreeFind:%#p\n", BTreeFind(tree, 6));
-	//printf("IsCompleteBTree?%d\n", IsCompleteBTree1(tree));
 	BTreeLevelOrder(tree);
+	printf("IsCompleteBTree:%d\n", IsCompleteBTree(tree));
+	printf("IsCompleteBTree:%d\n", IsCompleteBTree1(tree));
 }
