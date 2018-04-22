@@ -5,20 +5,20 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-typedef int DataType;
+typedef int STDataType;
 #define size 4
 
 typedef struct Stack
 {
-	DataType* _array;
+	STDataType* _array;
 	size_t	_top;
 	size_t	_capacity;
 }Stack;
 
 Stack* StackInit();
-void StackPush(Stack* s, DataType x);
+void StackPush(Stack* s, STDataType x);
 void StackPop(Stack* s);
-DataType StackTop(Stack* s);
+STDataType StackTop(Stack* s);
 size_t StackSize(Stack* s);
 int StackEmpty(Stack* s);
 void StackDestroy(Stack** s);
@@ -27,17 +27,17 @@ Stack* StackInit()
 {
 	Stack* newstack = (Stack*)malloc(sizeof(Stack));
 	newstack->_capacity = size;
-	newstack->_array = (DataType*)malloc(sizeof(DataType) * newstack->_capacity);
+	newstack->_array = (STDataType*)malloc(sizeof(STDataType) * newstack->_capacity);
 	newstack->_top = 0;
 	return newstack;
 }
 
-void StackPush(Stack* s, DataType x)
+void StackPush(Stack* s, STDataType x)
 {
 	if (s->_top == s->_capacity - 1)
 	{
 		s->_capacity *= 2;
-		s->_array = (DataType*)realloc(s->_array, sizeof(DataType) * s->_capacity);
+		s->_array = (STDataType*)realloc(s->_array, sizeof(STDataType) * s->_capacity);
 	}
 	*(s->_array + s->_top) = x;
 	s->_top++;
@@ -52,13 +52,9 @@ void StackPop(Stack* s)
 	s->_top--;
 }
 
-DataType StackTop(Stack* s)
+STDataType StackTop(Stack* s)
 {
-	if (StackEmpty(s))
-	{
-		return *(s->_array + s->_top - 1);
-	}
-	return -1;
+	return *(s->_array + s->_top - 1);
 }
 
 size_t StackSize(Stack* s)
@@ -75,26 +71,26 @@ int StackEmpty(Stack* s)
 	return 1;
 }
 
-void StackDestroy(Stack** s)
+void StackDestroy(Stack* s)
 {
-	free((*s)->_array);
-	free((*s));
+	free(s->_array);
+	free(s);
 }
 
 //面试题
 //1.两个栈实现一个队列
-void QuequePush_Stack(Stack* s1, DataType data);
-DataType QuequePop_Stack(Stack* s1, Stack* s2);
+void QuequePush_Stack(Stack* s1, STDataType data);
+STDataType QuequePop_Stack(Stack* s1, Stack* s2);
 void TestTwoStackToQueque();
 
-void QuequePush_Stack(Stack* s1, DataType data)
+void QuequePush_Stack(Stack* s1, STDataType data)
 {
 	StackPush(s1, data);
 }
 
-DataType QuequePop_Stack(Stack* s1, Stack* s2)
+STDataType QuequePop_Stack(Stack* s1, Stack* s2)
 {
-	DataType ret;
+	STDataType ret;
 	if (StackEmpty(s1) == 0 && StackEmpty(s2) == 0)
 	{
 		assert(0);
@@ -136,10 +132,10 @@ typedef struct MinStack
 }MinStack;
 
 MinStack* MinStackInit();
-void MinStackPush(MinStack* ms, DataType data);
+void MinStackPush(MinStack* ms, STDataType data);
 void MinStackPop(MinStack* ms);
-DataType MinStackTop(MinStack* ms);
-DataType MinStackMin(MinStack* ms);
+STDataType MinStackTop(MinStack* ms);
+STDataType MinStackMin(MinStack* ms);
 
 //缺点：当重复入最小值的时候，入100个最小值，最小值得栈也会入100个最小值
 
@@ -152,7 +148,7 @@ MinStack* MinStackInit()
 	return ms;
 }
 
-void MinStackPush(MinStack* ms, DataType data)
+void MinStackPush(MinStack* ms, STDataType data)
 {
 	assert(ms);
 	StackPush(ms->_st, data);
@@ -180,13 +176,13 @@ void MinStackPop(MinStack* ms)
 	StackPop(ms->_st);
 }
 
-DataType MinStackTop(MinStack* ms)
+STDataType MinStackTop(MinStack* ms)
 {
 	assert(ms);
 	return StackTop(ms->_st);
 }
 
-DataType MinStackMin(MinStack* ms)
+STDataType MinStackMin(MinStack* ms)
 {
 	assert(ms);
 	return StackTop(ms->_min);
@@ -213,16 +209,16 @@ void TestMinStack()//测试用例
 //3.一个数组实现共享栈
 typedef struct UnionStack
 {
-	DataType* _array;
+	STDataType* _array;
 	size_t _top1;
 	size_t _top2;
 	size_t	_capacity;
 }UStack;
 
 UStack* UStackInit();
-void UStackPush(UStack* us, size_t flag, DataType data);
+void UStackPush(UStack* us, size_t flag, STDataType data);
 void UStackPop(UStack* us, size_t flag);
-DataType UStackTop(UStack* us, size_t flag);
+STDataType UStackTop(UStack* us, size_t flag);
 size_t UStackSize(UStack* us, size_t flag);
 int UStackEmpty(UStack* us, size_t flag);
 
@@ -230,13 +226,13 @@ UStack* UStackInit()
 {
 	UStack* new_ustack = (UStack*)malloc(sizeof(UStack));
 	new_ustack->_capacity = size;
-	new_ustack->_array = (DataType*)malloc(sizeof(DataType) * new_ustack->_capacity);
+	new_ustack->_array = (STDataType*)malloc(sizeof(STDataType) * new_ustack->_capacity);
 	new_ustack->_top1 = 0;
 	new_ustack->_top2 = 0;
 	return new_ustack;
 }
 
-void UStackPush(UStack* us, size_t flag, DataType data)
+void UStackPush(UStack* us, size_t flag, STDataType data)
 {
 	assert(us);
 	//栈选择检查，防御性编程
@@ -249,9 +245,9 @@ void UStackPush(UStack* us, size_t flag, DataType data)
 	if ((us->_top1 == us->_capacity / 2 - 1) || (us->_top2 == us->_capacity / 2 - 1))
 	{
 		us->_capacity *= 2;
-		DataType* new_us = (DataType*)malloc(sizeof(DataType) * us->_capacity);
-		memcpy(new_us, us->_array, sizeof(DataType) * us->_top1);
-		memcpy(new_us + us->_capacity / 2, us->_array + us->_capacity / 4, sizeof(DataType) * us->_top2);
+		STDataType* new_us = (STDataType*)malloc(sizeof(STDataType) * us->_capacity);
+		memcpy(new_us, us->_array, sizeof(STDataType) * us->_top1);
+		memcpy(new_us + us->_capacity / 2, us->_array + us->_capacity / 4, sizeof(STDataType) * us->_top2);
 		free(us->_array);
 		us->_array = new_us;
 	}
@@ -286,7 +282,7 @@ void UStackPop(UStack* us, size_t flag)
 	}
 }
 
-DataType UStackTop(UStack* us, size_t flag)
+STDataType UStackTop(UStack* us, size_t flag)
 {
 	assert(us);
 	if ((flag != 1) && (flag != 2))
@@ -369,7 +365,7 @@ void TestUnionStack()
 }
 
 //4.判断入栈序列是否合法
-void JudgeSeqLegal(const DataType dst[], const DataType src[], size_t _size)
+void JudgeSeqLegal(const STDataType dst[], const STDataType src[], size_t _size)
 {
 	Stack* s = StackInit();
 	size_t src_index = 0;
