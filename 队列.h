@@ -5,11 +5,11 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-typedef int DataType;
+typedef int QueueDataType;
 
 typedef struct QueueNode
 {
-	DataType _data;
+	QueueDataType _data;
 	struct QueueNode* _next;
 }QueueNode;
 
@@ -20,12 +20,13 @@ typedef struct Queue
 }Queue;
 
 Queue* QueueInit();
-void QueuePush(Queue* q, DataType x);
+void QueuePush(Queue* q, QueueDataType x);
 void QueuePop(Queue* q);
-DataType QueueFront(Queue* q);
-DataType QueueBack(Queue* q);
+QueueDataType QueueFront(Queue* q);
+QueueDataType QueueBack(Queue* q);
 size_t QueueSize(Queue* q);
 int QueueEmpty(Queue* q);
+void QueueDestroy(Queue* q);
 
 QueueNode* BuyNewNode()
 {
@@ -42,7 +43,7 @@ Queue* QueueInit()
 	return q;
 }
 
-void QueuePush(Queue* q, DataType x)
+void QueuePush(Queue* q, QueueDataType x)
 {
 	assert(q);
 	if (q->_tail == NULL)
@@ -61,8 +62,12 @@ void QueuePush(Queue* q, DataType x)
 
 void QueuePop(Queue* q)
 {
-	assert(q);
+	//assert(q);
 	QueueNode* next = q->_head->_next;
+	if (q->_head == q->_tail)
+	{
+		q->_tail = NULL;
+	}
 	if (!QueueEmpty(q))
 	{
 		printf("empty\n");
@@ -71,13 +76,13 @@ void QueuePop(Queue* q)
 	q->_head = next;
 }
 
-DataType QueueFront(Queue* q)
+QueueDataType QueueFront(Queue* q)
 {
 	assert(q);
 	return q->_head->_data;
 }
 
-DataType QueueBack(Queue* q)
+QueueDataType QueueBack(Queue* q)
 {
 	assert(q);
 	return q->_tail->_data;
@@ -107,6 +112,19 @@ int QueueEmpty(Queue* q)
 		return 0;
 	}
 	return 1;
+}
+
+void QueueDestroy(Queue* q)
+{
+	QueueNode* cur = q->_head;
+	QueueNode* next = NULL;
+	while (cur != NULL)
+	{
+		next = cur->_next;
+		free(cur);
+		cur = next;
+	}
+	free(q);
 }
 
 void TestQueue()//队列测试用例
@@ -146,7 +164,7 @@ QueueStack* Stack_QueueInit()
 	return new_qs;
 }
 
-void StackPush_Queue(QueueStack* qs, DataType data)
+void StackPush_Queue(QueueStack* qs, QueueDataType data)
 {
 	if (QueueEmpty(qs->_q1) == 0)
 	{
@@ -175,14 +193,14 @@ void StackPop_Queue(QueueStack* qs)
 	}
 	while (QueueSize(op) != 1)
 	{
-		DataType tmp = QueueFront(op);
+		QueueDataType tmp = QueueFront(op);
 		QueuePop(op);
 		QueuePush(empty, tmp);
 	}
 	QueuePop(op);
 }
 
-DataType StackTop_Queue(QueueStack* qs)
+QueueDataType StackTop_Queue(QueueStack* qs)
 {
 	if ((QueueEmpty(qs->_q1) == 0) && (QueueEmpty(qs->_q2) == 0))
 	{
