@@ -36,6 +36,9 @@ void BTreePrevOrderNonR(BTNode* root);
 void BTreeInOrderNonR(BTNode* root);
 void BTreePostOrderNonR(BTNode* root);
 
+//ÃæÊÔÌâ
+void TreeMirror(BTNode* root);
+
 BTNode* BuyBTNode(BTreeDataType x)
 {
 	BTNode* new_node = (BTNode*)malloc(sizeof(BTNode));
@@ -334,6 +337,23 @@ void BTreePostOrderNonR(BTNode* root)
 	printf("\n");
 }
 
+void TreeMirror(BTNode* root)
+{
+	if (root == NULL)
+	{
+		return;
+	}
+	if (root->_left == root->_right)
+	{
+		return;
+	}
+	BTNode* tmp = root->_left;
+	root->_left = root->_right;
+	root->_right = tmp;
+	TreeMirror(root->_left);
+	TreeMirror(root->_right);
+}
+
 void TestBinaryTree()
 {
 	int a[] = { 1, 2, 3, '#', '#', 4 , '#', '#', 5, 6, '#', '#', '#' };
@@ -364,4 +384,9 @@ void TestBinaryTree()
 	BTreeLevelOrder(tree);
 	printf("IsCompleteBTree:%d\n", IsCompleteBTree(tree));
 	printf("IsCompleteBTree:%d\n", IsCompleteBTree1(tree));
+
+	TreeMirror(tree);
+	printf("BTreePrevOrder:");
+	BTreePrevOrder(tree);
+	printf("\n");
 }
