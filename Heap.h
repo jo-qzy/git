@@ -14,16 +14,16 @@ typedef struct Heap
 	size_t _capacity;
 }Heap;
 
-void HeapInit(Heap* hp, HeapDataType* a, size_t n);
-void HeapMake(Heap* hp);
-void HeapPush(Heap* hp, HeapDataType x);
-void HeapPop(Heap* hp);
-size_t GetHeapSize(Heap* hp);
-size_t HeapEmpty(Heap* hp);
-HeapDataType HeapTop(Heap* hp);
-void HeapSort(Heap* hp);
-void HeapAdjustDown(Heap* hp, int root);
-void HeapAdjustUp(Heap* hp, int child);
+void HeapInit(Heap* hp, HeapDataType* a, size_t n);//初始化堆
+void HeapMake(Heap* hp);//创建初始堆
+void HeapPush(Heap* hp, HeapDataType x);//插入
+void HeapPop(Heap* hp);//删除堆顶元素
+size_t GetHeapSize(Heap* hp);//堆大小
+size_t HeapEmpty(Heap* hp);//堆是否为空
+HeapDataType HeapTop(Heap* hp);//返回堆顶元素
+void HeapSort(Heap* hp);//堆排序
+void HeapAdjustDown(Heap* hp, int root);//堆向上调整
+void HeapAdjustUp(Heap* hp, int child);//堆向下调整
 
 void HeapInit(Heap* hp, HeapDataType* a, size_t n)
 {
