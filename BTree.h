@@ -37,7 +37,8 @@ void BTreeInOrderNonR(BTNode* root);
 void BTreePostOrderNonR(BTNode* root);
 
 //面试题
-void TreeMirror(BTNode* root);
+void BTreeMirror(BTNode* root);
+BTNode* BTreeFindLchild(BTNode* root, BTreeDataType x);
 
 BTNode* BuyBTNode(BTreeDataType x)
 {
@@ -337,7 +338,7 @@ void BTreePostOrderNonR(BTNode* root)
 	printf("\n");
 }
 
-void TreeMirror(BTNode* root)
+void BTreeMirror(BTNode* root)
 {
 	if (root == NULL)
 	{
@@ -350,8 +351,117 @@ void TreeMirror(BTNode* root)
 	BTNode* tmp = root->_left;
 	root->_left = root->_right;
 	root->_right = tmp;
-	TreeMirror(root->_left);
-	TreeMirror(root->_right);
+	BTreeMirror(root->_left);
+	BTreeMirror(root->_right);
+}
+
+void BTreeMirrorNoR(BTNode* root)
+{
+	if (root == NULL)
+	{
+		return;
+	}
+	Stack* s = StackInit();
+	BTNode* cur = root;
+	StackPush(s, cur);
+	while ((cur != NULL) || (StackEmpty(s) != 0))
+	{
+		while (cur)
+		{
+			BTNode* tmp = cur->_left;
+			cur->_left = cur->_right;
+			cur->_right = tmp;
+			StackPush(s, cur);
+			cur = cur->_right;
+		}
+		BTNode* front = StackTop(s);
+		StackPop(s);
+		cur = front->_left;
+	}
+}
+
+BTNode* BTreeFindFather(BTNode* root, BTreeDataType x)
+{
+	if (root == NULL)
+	{
+		return NULL;
+	}
+	if (((root->_left != NULL) && (root->_left->_data == x)) || ((root->_right != NULL) && (root->_right->_data == x)))
+	{
+		return root;
+	}
+	BTNode* left = BTreeFindFather(root->_left, x);
+	if (left != NULL)
+	{
+		return left;
+	}
+	return BTreeFindFather(root->_right, x);
+}
+
+BTNode* TreeFindLChild(BTNode* root,BTreeDataType x)
+{
+	BTNode* cur = BTreeFind(root, x);
+	if (cur != NULL)
+	{
+		return cur->_left;
+	}
+	return cur;
+}
+
+BTNode* TreeFindRChild(BTNode* root, BTreeDataType x)
+{
+	BTNode* cur = BTreeFind(root, x);
+	if (cur != NULL)
+	{
+		return cur->_right;
+	}
+	return cur;
+}
+
+size_t BTreeDistance(BTNode* root, BTNode* dst)//求节点深度
+{
+	if (root == NULL)
+	{
+		return 0;
+	}
+	if (root == dst)
+	{
+		return 1;
+	}
+	size_t left = BTreeDistance(root->_left, dst);
+	size_t right = BTreeDistance(root->_right, dst);
+	if (left != 0 || right != 0)
+	{
+		return 1 + (left < right ? right : left);
+	}
+	return 0;
+}
+
+BTNode* BTreeFindSameFather(BTNode* root, BTNode* n1, BTNode* n2)
+{
+	size_t k1 = BTreeDistance(root, n1), k2 = BTreeDistance(root, n2);
+	if (k2 < k1)
+	{
+		BTNode* tmp = n1;
+		k1 = k1 ^ k2;
+		k2 = k1 ^ k2;
+		k1 = k1 ^ k2;
+		n1 = n2;
+		n2 = tmp;
+	}
+	n1 = BTreeFindFather(root, n1->_data);
+	k1--;
+	while (k2 != k1)
+	{
+		n2 = BTreeFindFather(root, n2->_data);
+		k2--;
+	}
+	while (n1 != n2)
+	{
+		n1 = BTreeFindFather(root, n1->_data);
+		n2 = BTreeFindFather(root, n2->_data);
+	}
+	return n1;
 }
 
 void TestBinaryTree()
@@ -385,8 +495,19 @@ void TestBinaryTree()
 	printf("IsCompleteBTree:%d\n", IsCompleteBTree(tree));
 	printf("IsCompleteBTree:%d\n", IsCompleteBTree1(tree));
 
-	TreeMirror(tree);
+	BTreeMirror(tree);
 	printf("BTreePrevOrder:");
 	BTreePrevOrder(tree);
 	printf("\n");
+	BTreeMirrorNoR(tree);
+	printf("BTreePrevOrderNor:");
+	BTreePrevOrder(tree);
+	printf("\n");
+
+	printf("BTreeFindFather:%p  %p\n", BTreeFindFather(tree, 5), BTreeFind(tree, 1));
+	printf("BTreeDistance:%d\n", BTreeDistance(tree, BTreeFind(tree, 4)));
+	printf("BTreeDistance:%d\n", BTreeDistance(tree, BTreeFind(tree, 5)));
+	printf("BTreeDistance:%d\n", BTreeDistance(tree, BTreeFind(tree, 4)));
+	printf("BTreeDistance:%d\n", BTreeDistance(tree, BTreeFind(tree, 5)));
+	printf("BTreeFindSameFather:%p %p\n", BTreeFindSameFather(tree, BTreeFind(tree, 4), BTreeFind(tree, 5)), tree);
 }
