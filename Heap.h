@@ -14,16 +14,16 @@ typedef struct Heap
 	size_t _capacity;
 }Heap;
 
-void HeapInit(Heap* hp, HeapDataType* a, size_t n);//初始化堆
-void HeapMake(Heap* hp);//创建初始堆
-void HeapPush(Heap* hp, HeapDataType x);//插入
-void HeapPop(Heap* hp);//删除堆顶元素
-size_t GetHeapSize(Heap* hp);//堆大小
-size_t HeapEmpty(Heap* hp);//堆是否为空
-HeapDataType HeapTop(Heap* hp);//返回堆顶元素
-void HeapSort(Heap* hp);//堆排序
-void HeapAdjustDown(Heap* hp, int root);//堆向上调整
-void HeapAdjustUp(Heap* hp, int child);//堆向下调整
+void HeapInit(Heap* hp, HeapDataType* a, size_t n);
+void HeapMake(Heap* hp);
+void HeapPush(Heap* hp, HeapDataType x);
+void HeapPop(Heap* hp);
+size_t GetHeapSize(Heap* hp);
+size_t HeapEmpty(Heap* hp);
+HeapDataType HeapTop(Heap* hp);
+void HeapSort(Heap* hp);
+void HeapAdjustDown(Heap* hp, int parent);
+void HeapAdjustUp(Heap* hp, int child);
 
 void HeapInit(Heap* hp, HeapDataType* a, size_t n)
 {
@@ -33,38 +33,11 @@ void HeapInit(Heap* hp, HeapDataType* a, size_t n)
 	memcpy(hp->_a, a, sizeof(HeapDataType) * n);
 }
 
-void swap(HeapDataType* x1, HeapDataType* x2)
+static void Swap(HeapDataType* x1, HeapDataType* x2)
 {
 	*x1 ^= *x2;
 	*x2 ^= *x1;
 	*x1 ^= *x2;
-}
-
-void HeapAdjust(Heap* hp, size_t parent, size_t child)
-{
-	int flag = 0;
-	while (child < hp->_size)
-	{
-		flag = 0;
-		if (child + 1 < hp->_size)
-		{
-			if (*(hp->_a + child) < *(hp->_a + child + 1))
-			{
-				child = child + 1;
-			}
-		}
-		if (*(hp->_a + parent) < *(hp->_a + child))
-		{
-			flag = 1;
-			swap(hp->_a + parent, hp->_a + child);
-		}
-		if (!flag)
-		{
-			break;
-		}
-		parent = child;
-		child = parent * 2 + 1;
-	}
 }
 
 void HeapMake(Heap* hp)
@@ -75,7 +48,7 @@ void HeapMake(Heap* hp)
 	for (parent; parent >= 0; parent--)
 	{
 		child = parent * 2 + 1;
-		HeapAdjust(hp, parent, child);
+		HeapAdjustDown(hp, parent, child);
 	}
 }
 
@@ -137,28 +110,55 @@ void HeapSort(Heap* hp)
 	int tmp = hp->_size;
 	while (hp->_size != 1)
 	{
-		swap(hp->_a + 0,hp->_a + hp->_size - 1);
+		Swap(hp->_a + 0,hp->_a + hp->_size - 1);
 		hp->_size--;
 		HeapAdjustDown(hp, 0);
 	}
 	hp->_size = tmp;
 }
 
-void HeapAdjustDown(Heap* hp, int root)
+void HeapAdjustDown(Heap* hp, int parent)
 {
 	assert(hp);
-	HeapAdjust(hp, root, root * 2 + 1);
+	int child = parent * 2 + 1;
+	while (child < hp->_size)
+	{
+		if (child + 1 < hp->_size)
+		{
+			if (*(hp->_a + child) < *(hp->_a + child + 1))
+			{
+				child = child + 1;
+			}
+		}
+		if (*(hp->_a + parent) < *(hp->_a + child))
+		{
+			Swap(hp->_a + parent, hp->_a + child);
+			parent = child;
+			child = parent * 2 + 1;
+		}
+		else
+		{
+			break;
+		}
+	}
 }
 
 void HeapAdjustUp(Heap* hp, int child)
 {
 	assert(hp && child > 0 && child < hp->_size);
 	int parent = (child - 1) / 2;
-	while (child != 0)
+	while (child)
 	{
-		HeapAdjust(hp, parent, child);
-		child = parent;
-		parent = (child - 1) / 2;
+		if (*(hp->_a + parent) < *(hp->_a + child))
+		{
+			Swap(hp->_a + parent, hp->_a + child);
+			child = parent;
+			parent = (child - 1) / 2;
+		}
+		else
+		{
+			break;
+		}
 	}
 }
 
