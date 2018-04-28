@@ -1,10 +1,3 @@
-#pragma once
-
-#include <stdio.h>
-#include <stdlib.h>
-#include <windows.h>
-#include <assert.h>
-
 typedef int HeapDataType;
 
 typedef struct Heap
@@ -43,12 +36,12 @@ static void Swap(HeapDataType* x1, HeapDataType* x2)
 void HeapMake(Heap* hp)
 {
 	assert(hp);
-	int parent = (int)(hp->_size - 2) / 2;
+	int parent = (hp->_size - 2) / 2;
 	int child = parent * 2 + 1;
 	for (parent; parent >= 0; parent--)
 	{
 		child = parent * 2 + 1;
-		HeapAdjustDown(hp, parent, child);
+		HeapAdjustDown(hp, parent);
 	}
 }
 
@@ -101,6 +94,7 @@ size_t HeapEmpty(Heap* hp)//¿ÕÎª0£¬·Ç¿ÕÎª1
 
 HeapDataType HeapTop(Heap* hp)
 {
+	assert(hp && hp->_size > 0);
 	return *(hp->_a + 0);
 }
 
@@ -121,9 +115,9 @@ void HeapAdjustDown(Heap* hp, int parent)
 {
 	assert(hp);
 	int child = parent * 2 + 1;
-	while (child < hp->_size)
+	while (child < (int)hp->_size)
 	{
-		if (child + 1 < hp->_size)
+		if (child + 1 < (int)hp->_size)
 		{
 			if (*(hp->_a + child) < *(hp->_a + child + 1))
 			{
@@ -145,7 +139,7 @@ void HeapAdjustDown(Heap* hp, int parent)
 
 void HeapAdjustUp(Heap* hp, int child)
 {
-	assert(hp && child > 0 && child < hp->_size);
+	assert(hp && child > 0 && child < (int)hp->_size);
 	int parent = (child - 1) / 2;
 	while (child)
 	{
