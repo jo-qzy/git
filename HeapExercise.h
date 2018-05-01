@@ -7,6 +7,9 @@
 
 //堆的应用
 //1.TopK问题
+//思路是建一个K个元素的小堆，以十万亿个元素的前十个元素当做初始堆创建
+//大堆只能找出10万亿个元素里面最大的那一个，这里需要仔细思考为什么用小堆
+//用小堆找到最后，堆内十个元素必定是所有元素里最大的
 void GetTopK(int* a, int size, int K);//TopK问题
 void AdjustDown(int* heap, int size, int parent);
 void TestTopK();//测试用例
@@ -15,10 +18,12 @@ void GetTopK(int* a, int size, int K)//TopK问题
 {
 	int* heap = (int*)malloc(sizeof(int) * K);
 	memcpy(heap, a, sizeof(int) * K);
+	//建堆
 	for (int i = (K - 2) / 2; i >= 0; i--)
 	{
 		AdjustDown(heap, K, i);
 	}
+	//从第K+1个元素开始读取后面的数据，比堆顶大便替换堆顶元素
 	for (int i = K; i < size; i++)
 	{
 		if (*(a + i) > *heap)
@@ -66,6 +71,7 @@ void TestTopK()
 }
 
 //2.优先级队列的实现
+//实现方式：堆的另一种应用而已，本质依旧是堆，换了个名字而已
 #define _SIZE 5
 
 typedef int PQueueDataType;
