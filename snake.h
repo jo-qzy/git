@@ -16,24 +16,21 @@ typedef struct SNAKE
 	struct SNAKE *pNext;
 }snake;
 
-snake* head;//蛇头
-snake* tail;//蛇尾
-snake food;
 short key = VK_RIGHT;
 int speed = 500;
 int score = 0;
 int next_level = 30;
 
 static void Pos(int x, int y);//移动光标函数
-static void SnakeInit();//初始化蛇
-static void GetFood();
-static void FoodPrint();
-static int SnakeFoodJudge();
+static void SnakeInit(snake** head,snake**tail);//初始化蛇
+static void GetFood(snake* head,snake** food);
+static void FoodPrint(snake* food);
+static int SnakeFoodJudge(snake* head,snake* food);
 static void GameCycle();
 static void Pause();
-static void SnakeMove();
-static void DoNotBitYourself();
-static void StayAwayFromWall();
+static void SnakeMove(snake** head, snake** tail, snake** food);
+static void DoNotBitYourself(snake* head);
+static void StayAwayFromWall(snake* head);
 void GameEntrance();
 
 static void PrintGameWall();
@@ -53,24 +50,24 @@ static void Pos(int x, int y)//获取
 	SetConsoleCursorInfo(output, &cci);
 }
 
-static void SnakeInit()
+static void SnakeInit(snake** head,snake** tail)
 {
 	snake* cur = NULL;
 	int i = 0;
 	cur = (snake*)malloc(sizeof(snake));
-	head = cur;//保存头
+	*head = cur;//保存头
 	cur->x = (_LENTH + 2) / 2 * 2;
 	cur->y = (_WIDTH + 2) / 2;
 	for (i = 1; i < _SNAKE_LENTH; i++)
 	{
-		tail = (snake*)malloc(sizeof(snake));
-		tail->x = head->x - i * 2;
-		tail->y = head->y;
-		cur->pNext = tail;
+		*tail = (snake*)malloc(sizeof(snake));
+		(*tail)->x = (*head)->x - i * 2;
+		(*tail)->y = (*head)->y;
+		cur->pNext = *tail;
 		cur = cur->pNext;
 	}
-	tail->pNext = NULL;
-	cur = head;
+	(*tail)->pNext = NULL;
+	cur = *head;
 	while (cur != NULL)
 	{
 		Pos(cur->x, cur->y);
@@ -79,29 +76,29 @@ static void SnakeInit()
 	}
 }
 
-static void GetFood()
+static void GetFood(snake* head,snake** food)
 {
 	srand((unsigned int)time(0));
 	do
 	{
-		food.x = (rand() % (_LENTH - 1) + 1) * 2;
-		food.y = rand() % (_WIDTH - 1) + 1;
-	} while (SnakeFoodJudge() == 0);
-	FoodPrint();
+		(*food)->x = (rand() % (_LENTH - 1) + 1) * 2;
+		(*food)->y = rand() % (_WIDTH - 1) + 1;
+	} while (SnakeFoodJudge(head,*food) == 0);
+	FoodPrint(*food);
 }
 
-static void FoodPrint()
+static void FoodPrint(snake* food)
 {
-	Pos(food.x, food.y);
+	Pos(food->x, food->y);
 	printf("■");
 }
 
-static int SnakeFoodJudge()
+static int SnakeFoodJudge(snake* head,snake* food)
 {
 	snake* cur = head;
 	while (cur != NULL)
 	{
-		if((cur->x == food.x) && (cur->y == food.y))
+		if((cur->x == food->x) && (cur->y == food->y))
 		{
 			return 0;
 		}
@@ -112,6 +109,11 @@ static int SnakeFoodJudge()
 
 static void GameCycle()
 {
+	snake* food = (snake*)malloc(sizeof(snake));
+	snake* head = NULL;
+	snake* tail = NULL;
+	SnakeInit(&head, &tail);
+	GetFood(head,&food);
 	while (1)
 	{
 		if (GetAsyncKeyState(VK_UP) && (key != VK_DOWN))
@@ -135,9 +137,9 @@ static void GameCycle()
 
 			Pause();
 		}
-		SnakeMove();
-		DoNotBitYourself();
-		StayAwayFromWall();
+		SnakeMove(&head,&tail,&food);
+		DoNotBitYourself(head);
+		StayAwayFromWall(head);
 		if ((score == next_level) && (speed >= 10))
 		{
 			speed -= 10;
@@ -161,57 +163,56 @@ static void Pause()
 	}
 }
 
-static void SnakeMove()
+static void SnakeMove(snake** head, snake** tail,snake** food)
 {
 	snake* cur = NULL;
 	cur = (snake*)malloc(sizeof(snake));
-	cur->pNext = head;
+	cur->pNext = *head;
 	switch (key)
 	{
 	case VK_UP:
-		cur->x = head->x;
-		cur->y = head->y - 1;
+		cur->x = (*head)->x;
+		cur->y = (*head)->y - 1;
 		break;
 	case VK_DOWN:
-		cur->x = head->x;
-		cur->y = head->y + 1;
+		cur->x = (*head)->x;
+		cur->y = (*head)->y + 1;
 		break;
 	case VK_LEFT:
-		cur->x = head->x - 2;
-		cur->y = head->y;
+		cur->x = (*head)->x - 2;
+		cur->y = (*head)->y;
 		break;
 	case VK_RIGHT:
-		cur->x = head->x + 2;
-		cur->y = head->y;
+		cur->x = (*head)->x + 2;
+		cur->y = (*head)->y;
 		break;
 	}
-	head = cur;
-	Pos(head->x, head->y);
+	(*head) = cur;
+	Pos((*head)->x, (*head)->y);
 	printf("■");
-	if ((head->x == food.x) && (head->y == food.y))
+	if (((*head)->x == (*food)->x) && ((*head)->y == (*food)->y))
 	{
 		score += 10;
 		Pos(75, 11);
 		printf("得分：%d", score);
-		GetFood();
+		GetFood(*head,food);
 		return;
 	}
-	if ((head->x != tail->x) || (head->y != tail->y))
+	if (((*head)->x != (*tail)->x) || ((*head)->y != (*tail)->y))
 	{
-		Pos(tail->x, tail->y);
+		Pos((*tail)->x, (*tail)->y);
 		printf("  ");
-		
 	}
 	while (cur->pNext->pNext != NULL)
 	{
 		cur = cur->pNext;
 	}
-	free(tail);
-	tail = cur;
-	tail->pNext = NULL;
+	free(*tail);
+	*tail = cur;
+	(*tail)->pNext = NULL;
 }
 
-static void DoNotBitYourself()
+static void DoNotBitYourself(snake* head)
 {
 	snake* cur = head->pNext;
 	while (cur != NULL)
@@ -228,7 +229,7 @@ static void DoNotBitYourself()
 	}
 }
 
-static void StayAwayFromWall()
+static void StayAwayFromWall(snake* head)
 {
 	if ((head->x == 0) || (head->x == (_LENTH + 1) * 2) || (head->y == 0) || (head->y == _WIDTH + 1))
 	{
@@ -254,9 +255,7 @@ void GameEntrance()
 	Pos(75, 15);
 	printf("按空格可以暂停……");
 	PrintGameWall();
-	SnakeInit();
 	Pos(40, 20);
-	GetFood();
 	GameCycle();
 }
 
