@@ -8,6 +8,7 @@
 #define _LENTH 28//修改游戏棋盘大
 #define _WIDTH 28//只需输入内部的大小为N*N即可
 #define _SNAKE_LENTH 3//蛇的初始长度
+#define _SNAKE_SPEED 300//蛇初始速度
 
 typedef struct SNAKE
 {
@@ -16,11 +17,6 @@ typedef struct SNAKE
 	struct SNAKE *pNext;
 }snake;
 
-short key = VK_RIGHT;
-int speed = 500;
-int score = 0;
-int next_level = 30;
-
 static void Pos(int x, int y);//移动光标函数
 static void SnakeInit(snake** head,snake**tail);//初始化蛇
 static void GetFood(snake* head,snake** food);
@@ -28,7 +24,7 @@ static void FoodPrint(snake* food);
 static int SnakeFoodJudge(snake* head,snake* food);
 static void GameCycle();
 static void Pause();
-static void SnakeMove(snake** head, snake** tail, snake** food);
+static void SnakeMove(snake** head, snake** tail, snake** food,short key,int* score);
 static void DoNotBitYourself(snake* head);
 static void StayAwayFromWall(snake* head);
 void GameEntrance();
@@ -112,6 +108,10 @@ static void GameCycle()
 	snake* food = (snake*)malloc(sizeof(snake));
 	snake* head = NULL;
 	snake* tail = NULL;
+	short key = VK_RIGHT;
+	int score = 0;
+	int speed = _SNAKE_SPEED;
+	int next_level = 30;
 	SnakeInit(&head, &tail);
 	GetFood(head,&food);
 	while (1)
@@ -137,7 +137,7 @@ static void GameCycle()
 
 			Pause();
 		}
-		SnakeMove(&head,&tail,&food);
+		SnakeMove(&head,&tail,&food,key,&score);
 		DoNotBitYourself(head);
 		StayAwayFromWall(head);
 		if ((score == next_level) && (speed >= 10))
@@ -163,7 +163,7 @@ static void Pause()
 	}
 }
 
-static void SnakeMove(snake** head, snake** tail,snake** food)
+static void SnakeMove(snake** head, snake** tail,snake** food,short key,int* score)
 {
 	snake* cur = NULL;
 	cur = (snake*)malloc(sizeof(snake));
@@ -192,9 +192,9 @@ static void SnakeMove(snake** head, snake** tail,snake** food)
 	printf("■");
 	if (((*head)->x == (*food)->x) && ((*head)->y == (*food)->y))
 	{
-		score += 10;
+		*score += 10;
 		Pos(75, 11);
-		printf("得分：%d", score);
+		printf("得分：%d", *score);
 		GetFood(*head,food);
 		return;
 	}
@@ -245,9 +245,9 @@ void GameEntrance()
 {
 	Welcome();
 	Pos(75, 11);
-	printf("得分：%d", score);
+	printf("得分：0");
 	Pos(75, 12);
-	printf("当前移动速度：每隔%d毫秒移动向前移动", speed);
+	printf("当前移动速度：每隔300毫秒移动向前移动");
 	Pos(75, 13);
 	printf("每获得30分速度会加快");
 	Pos(75, 14);
