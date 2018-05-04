@@ -4,6 +4,7 @@
 #include <stdlib.h>
 #include <windows.h>
 #include <time.h>
+#include <stdbool.h>
 
 #define _LENTH 28//修改游戏棋盘大
 #define _WIDTH 28//只需输入内部的大小为N*N即可
@@ -19,18 +20,18 @@ typedef struct SNAKE
 
 static void Pos(int x, int y);//移动光标函数
 static void SnakeInit(snake** head,snake**tail);//初始化蛇
-static void GetFood(snake* head,snake** food);
-static void FoodPrint(snake* food);
-static int SnakeFoodJudge(snake* head,snake* food);
-static void GameCycle();
-static void Pause();
-static void SnakeMove(snake** head, snake** tail, snake** food,short key,int* score);
-static void DoNotBitYourself(snake* head);
-static void StayAwayFromWall(snake* head);
-void GameEntrance();
-
-static void PrintGameWall();
-static void Welcome();
+static void GetFood(snake* head,snake** food);//获取食物
+static void FoodPrint(snake* food);//打印食物
+static int SnakeFoodJudge(snake* head,snake* food);//防止食物同蛇身重叠
+static void GameCycle();//游戏循环
+static void Pause();//暂停函数
+static void SnakeMove(snake** head, snake** tail, snake** food,short key,int* score);//蛇移动
+static void DoNotBitYourself(snake* head);//判断蛇身是否撞到自己
+static void StayAwayFromWall(snake* head);//撞墙函数
+void GameEntrance();//游戏入口，外部调用函数
+//UI部分
+static void PrintGameWall();//打印墙
+static void Welcome();//欢迎界面
 
 static void Pos(int x, int y)//获取
 {
@@ -54,7 +55,7 @@ static void SnakeInit(snake** head,snake** tail)
 	*head = cur;//保存头
 	cur->x = (_LENTH + 2) / 2 * 2;
 	cur->y = (_WIDTH + 2) / 2;
-	for (i = 1; i < _SNAKE_LENTH; i++)
+	for (i = 1; i < _SNAKE_LENTH; i++)//将蛇初始化在游戏界面中央
 	{
 		*tail = (snake*)malloc(sizeof(snake));
 		(*tail)->x = (*head)->x - i * 2;
@@ -75,6 +76,7 @@ static void SnakeInit(snake** head,snake** tail)
 static void GetFood(snake* head,snake** food)
 {
 	srand((unsigned int)time(0));
+	//第一次尝试用递归方式生成食物，小概率出现栈溢出
 	do
 	{
 		(*food)->x = (rand() % (_LENTH - 1) + 1) * 2;
@@ -114,6 +116,7 @@ static void GameCycle()
 	int next_level = 30;
 	SnakeInit(&head, &tail);
 	GetFood(head,&food);
+	//GetAsyncKeyState(short key)从标准输入获取键盘按键
 	while (1)
 	{
 		if (GetAsyncKeyState(VK_UP) && (key != VK_DOWN))
@@ -134,7 +137,6 @@ static void GameCycle()
 		}
 		else if (GetAsyncKeyState(VK_SPACE))
 		{
-
 			Pause();
 		}
 		SnakeMove(&head,&tail,&food,key,&score);
@@ -166,7 +168,7 @@ static void Pause()
 static void SnakeMove(snake** head, snake** tail,snake** food,short key,int* score)
 {
 	snake* cur = NULL;
-	cur = (snake*)malloc(sizeof(snake));
+	cur = (snake*)malloc(sizeof(snake));//头插法
 	cur->pNext = *head;
 	switch (key)
 	{
@@ -190,6 +192,7 @@ static void SnakeMove(snake** head, snake** tail,snake** food,short key,int* sco
 	(*head) = cur;
 	Pos((*head)->x, (*head)->y);
 	printf("■");
+	//吃到食物，加分
 	if (((*head)->x == (*food)->x) && ((*head)->y == (*food)->y))
 	{
 		*score += 10;
@@ -198,6 +201,7 @@ static void SnakeMove(snake** head, snake** tail,snake** food,short key,int* sco
 		GetFood(*head,food);
 		return;
 	}
+	//局部刷新蛇身
 	if (((*head)->x != (*tail)->x) || ((*head)->y != (*tail)->y))
 	{
 		Pos((*tail)->x, (*tail)->y);
