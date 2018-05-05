@@ -21,7 +21,7 @@ void StackPop(Stack* s);
 STDataType StackTop(Stack* s);
 size_t StackSize(Stack* s);
 int StackEmpty(Stack* s);
-void StackDestroy(Stack** s);
+void StackDestroy(Stack* s);
 
 Stack* StackInit()
 {
