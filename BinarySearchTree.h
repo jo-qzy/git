@@ -1,7 +1,9 @@
 #pragma once
+
 #include <stdio.h>
 #include <windows.h>
 #include <string.h>
+#include <stdbool.h>
 
 typedef int BSTreeDataType;
 
@@ -20,6 +22,7 @@ bool BSTreeRemoveNoR(BSTree** root, BSTreeDataType data);//·ÇµÝ¹éÉ¾³ý
 BSTree* BSTreeFind(BSTree* root, BSTreeDataType data);//µÝ¹é²éÕÒ½Úµã
 BSTree* BSTreeFindNoR(BSTree* root, BSTreeDataType data);//·ÇµÝ¹é²éÕÒ
 void BSTreeInOrder(BSTree* root);//ÖÐÐò±éÀú
+void BSTreeDestroy(BSTree* root);//Ïú»ÙÊ÷
 void BSTreeTest();//²âÊÔÓÃÀý
 
 BSTree* CreateBSTreeNode(BSTreeDataType data)
@@ -276,6 +279,17 @@ void BSTreeInOrder(BSTree* root)
 	BSTreeInOrder(root->_right);
 }
 
+void BSTreeDestroy(BSTree* root)
+{
+	if (root == NULL)
+	{
+		return;
+	}
+	BSTreeDestroy(root->_left);
+	BSTreeDestroy(root->_right);
+	free(root);
+}
+
 void BSTreeTest()
 {
 	BSTree* tree = NULL;
@@ -324,4 +338,7 @@ void BSTreeTest()
 	BSTreeRemoveNoR(&tree_noR, 5);
 	BSTreeInOrder(tree_noR);
 	printf("\n");
+
+	BSTreeDestroy(tree);
+	BSTreeDestroy(tree_noR);
 }
