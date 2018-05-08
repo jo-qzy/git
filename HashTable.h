@@ -31,10 +31,10 @@ typedef struct HashTable
 void HashInit(Hash* ht, size_t capacityy);//初始化
 
 //功能辅助函数
-static size_t GetPrime(Hash* ht);
-static size_t HashFunc(HashTable* ht, HTDataType data);
-static void CheckCapacity(HashTable* ht);
-static void HashPrint(HashTable* ht);
+static size_t GetPrime(Hash* ht);//STL里面的素数表，获取素数
+static size_t HashFunc(HashTable* ht, HTDataType data);	//哈希函数
+static void CheckCapacity(HashTable* ht);//空间检查
+static void HashPrint(HashTable* ht);//打印
 
 //基本功能函数，增删查
 bool HashInsert(Hash* ht, HTDataType data);
@@ -58,7 +58,7 @@ void HashInit(Hash* ht, size_t capacity)
 
 static size_t GetPrime(Hash* ht)
 {
-	const int _PrimeSize = 28;
+	const int _PrimeSize = 28;//仅可在c++下使用
 	//该数据都是经过许多人测试的素数，能够满足需求，冲突较小
 	static const unsigned long _PrimeList[_PrimeSize] = {
 		53ul,97ul,193ul,389ul,769ul,
@@ -90,6 +90,7 @@ static size_t HashFunc(HashTable* ht, HTDataType data)
 static void CheckCapacity(HashTable* ht)
 {
 	assert(ht);
+	//若空间不够，扩容
 	if (ht->_size * 10 / ht->_capacity >= 7)
 	{
 		HashTable newht;
@@ -98,7 +99,7 @@ static void CheckCapacity(HashTable* ht)
 		{
 			if ((*(ht->_table + i))._status == EXIST)
 			{
-				HashInsert(&newht, (*(ht->_table + i))._data);
+				HashInsert(&newht, (*(ht->_table + i))._data);//赋用Insert进行重新寻址插入
 			}
 		}
 		free(ht->_table);
@@ -214,7 +215,7 @@ void TestHashTable()
 {
 	Hash ht;
 	HashInit(&ht, 0);
-
+	//插入测试
 	srand((unsigned)time(0));
 	for (int i = 0; i < 100; i++)
 	{
@@ -222,11 +223,12 @@ void TestHashTable()
 	}
 	HashPrint(&ht);
 	printf("-------------------------------------------------\n");
+	//删除测试
 	for (int i = 0; i < 100; i++)
 	{
 		HashRemove(&ht, rand() % 100);
 	}
 
 	HashPrint(&ht);
-
+	HashDestroy(&ht);
 }
