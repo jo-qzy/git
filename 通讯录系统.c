@@ -19,7 +19,7 @@
 
 
 
-typedef struct Addr
+typedef struct imformation
 {
 	char name[10];
 	char sex;
